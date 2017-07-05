@@ -20,6 +20,14 @@ module.exports = function createDynamicRouter (keystone) {
 	router.use(bodyParser.urlencoded({ extended: true }));
 	router.use(multer({ includeEmptyFields: true }));
 
+	// hookin custome admin api middlewares
+	let middlewares = keystone.get('admin api middlewares');
+	middlewares = Array.isArray(middlewares) ? middlewares : [middlewares];
+	middlewares = middlewares.filter(x => typeof x === 'function');
+	if (middlewares.length) {
+		router.use(middlewares);
+	}
+
 	// Bind the request to the keystone instance
 	router.use(function (req, res, next) {
 		req.keystone = keystone;
