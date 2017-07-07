@@ -2,6 +2,11 @@ import React from 'react';
 import Field from '../Field';
 import { GlyphButton, FormInput } from '../../../admin/client/App/elemental';
 
+const isImageUrl = (url) => {
+	const pattern = /\w\.(png|jpg|jpeg|gif)$/;
+	return pattern.test(url.split('?').shift());
+};
+
 module.exports = Field.create({
 	displayName: 'URLField',
 	statics: {
@@ -17,6 +22,7 @@ module.exports = Field.create({
 	},
 	renderLink () {
 		if (!this.props.value) return null;
+		if (isImageUrl(this.props.value)) return null;
 
 		return (
 			<GlyphButton
@@ -28,7 +34,22 @@ module.exports = Field.create({
 			/>
 		);
 	},
-	renderField () {
+	renderThumbnail () {
+		if (!this.props.value) return null;
+		if (!isImageUrl(this.props.value)) return null;
+
+		return (
+			<img
+				src={this.props.value}
+				className="keystone-image-thumbnail"
+				onClick={this.openValue}
+				title={'Open ' + this.props.value + ' in a new tab'}
+				height={120}
+				width={200}
+			/>
+		);
+	},
+	renderInput () {
 		return (
 			<FormInput
 				autoComplete="off"
@@ -40,11 +61,12 @@ module.exports = Field.create({
 			/>
 		);
 	},
-	wrapField () {
+	renderField () {
 		return (
 			<div style={{ position: 'relative' }}>
-				{this.renderField()}
+				{this.renderInput()}
 				{this.renderLink()}
+				{this.renderThumbnail()}
 			</div>
 		);
 	},
@@ -57,3 +79,4 @@ module.exports = Field.create({
 		);
 	},
 });
+
