@@ -5,6 +5,7 @@
 // Takes only FormInput and Button as children, rendering them as a
 // tidy inline array
 
+import { borderLeftRadius, borderRightRadius } from '../../../utils/css';
 import theme from '../../../theme';
 
 module.exports = {
@@ -39,12 +40,10 @@ module.exports = {
 		marginLeft: theme.button.borderWidth * -1,
 	},
 	contiguous__first: {
-		borderBottomRightRadius: '0 !important',
-		borderTopRightRadius: '0 !important',
+		...borderRightRadius(0),
 	},
 	contiguous__last: {
-		borderBottomLeftRadius: '0 !important',
-		borderTopLeftRadius: '0 !important',
+		...borderLeftRadius(0),
 		marginLeft: theme.button.borderWidth * -1,
 	},
 };

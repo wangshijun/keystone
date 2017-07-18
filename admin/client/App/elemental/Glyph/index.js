@@ -1,10 +1,12 @@
-import { css } from 'glamor';
+import { css, StyleSheet } from 'aphrodite/no-important';
 import React, { PropTypes } from 'react';
 
 import octicons from './octicons';
 import colors from './colors';
 import sizes from './sizes';
-import classes from './styles';
+import styles from './styles';
+
+const classes = StyleSheet.create(styles);
 
 // FIXME static octicon classes leaning on Elemental to avoid duplicate
 // font and CSS; inflating the project size

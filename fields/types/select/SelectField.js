@@ -51,17 +51,13 @@ module.exports = Field.create({
 			: val;
 
 		return (
-			<div>
-				{/* This input element fools Safari's autocorrect in certain situations that completely break react-select */}
-				<input type="text" style={{ position: 'absolute', width: 1, height: 1, zIndex: -1, opacity: 0 }} tabIndex="-1"/>
-				<Select
-					simpleValue
-					name={this.getInputName(path)}
-					value={value}
-					options={options}
-					onChange={this.valueChanged}
-				/>
-			</div>
+			<Select
+				simpleValue
+				name={this.getInputName(path)}
+				value={value}
+				options={options}
+				onChange={this.valueChanged}
+			/>
 		);
 	},
 

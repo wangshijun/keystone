@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { css } from 'glamor';
+import { css, StyleSheet } from 'aphrodite/no-important';
 
 import theme from '../../../theme';
 import { fade } from '../../../utils/color';
@@ -45,7 +45,7 @@ const anchorHoverAndFocusStyles = {
 	textDecoration: 'underline',
 };
 
-const classes = {
+const classes = StyleSheet.create({
 	noedit: {
 		appearance: 'none',
 		backgroundColor: theme.input.background.noedit,
@@ -89,6 +89,6 @@ const classes = {
 		':hover': anchorHoverAndFocusStyles,
 		':focus': anchorHoverAndFocusStyles,
 	},
-};
+});
 
 module.exports = FormInputNoedit;

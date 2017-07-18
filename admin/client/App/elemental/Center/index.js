@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
-import { css } from 'glamor';
-import classes from './styles';
+import { StyleSheet, css } from 'aphrodite/no-important';
+import styles from './styles';
+
+const classes = StyleSheet.create(styles);
 
 function Center ({
 	className,

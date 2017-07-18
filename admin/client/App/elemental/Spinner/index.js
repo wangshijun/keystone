@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
-import { css } from 'glamor';
-import classes from './styles';
+import { css, StyleSheet } from 'aphrodite/no-important';
+import styles from './styles';
 import ScreenReaderOnly from '../ScreenReaderOnly';
 import colors from './colors';
 import sizes from './sizes';
@@ -30,5 +30,7 @@ Spinner.defaultProps = {
 	size: 'medium',
 	color: 'default',
 };
+
+const classes = StyleSheet.create(styles);
 
 module.exports = Spinner;

@@ -47,10 +47,8 @@ import {
 	setFilter,
 	clearFilter,
 	clearAllFilters,
-	setActiveFilters,
 	setActiveSearch,
 	setActiveColumns,
-	clearCachedQuery,
 	setActiveSort,
 } from './active';
 
@@ -74,11 +72,9 @@ export {
 	setFilter,
 	clearFilter,
 	clearAllFilters,
-	setActiveFilters,
 	setActiveSearch,
 	setActiveColumns,
 	setActiveSort,
-	clearCachedQuery,
 	loadItems,
 	itemsLoaded,
 	itemLoadingError,

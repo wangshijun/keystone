@@ -1,4 +1,4 @@
-import { css } from 'glamor';
+import { css, StyleSheet } from 'aphrodite/no-important';
 import React, { PropTypes } from 'react';
 import { DropdownButton, Glyph } from '../../../elemental';
 
@@ -17,7 +17,7 @@ ListHeaderButton.propTypes = {
 
 // show an icon on small screens where real estate is precious
 // otherwise render the label
-const classes = {
+const classes = StyleSheet.create({
 	glyph: {
 		'display': 'none',
 
@@ -32,6 +32,6 @@ const classes = {
 			display: 'none',
 		},
 	},
-};
+});
 
 module.exports = ListHeaderButton;

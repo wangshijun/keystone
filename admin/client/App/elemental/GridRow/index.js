@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { css } from 'glamor';
+import { css, StyleSheet } from 'aphrodite/no-important';
 
 class GridRow extends Component {
 	getChildContext () {
@@ -49,11 +49,11 @@ GridRow.defaultProps = {
 	xsmall: 'one-whole',
 };
 
-const classes = {
+const classes = StyleSheet.create({
 	grid: {
 		display: 'flex',
 		flexWrap: 'wrap',
 	},
-};
+});
 
 module.exports = GridRow;

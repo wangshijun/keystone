@@ -1,7 +1,9 @@
 import React, { PropTypes } from 'react';
-import { css } from 'glamor';
-import classes from './styles';
+import { css, StyleSheet } from 'aphrodite/no-important';
+import styles from './styles';
 import colors from './colors';
+
+const classes = StyleSheet.create(styles);
 
 function SegmentedControl ({
 	className,

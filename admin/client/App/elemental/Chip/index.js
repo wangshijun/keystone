@@ -1,7 +1,9 @@
-import { css } from 'glamor';
+import { css, StyleSheet } from 'aphrodite/no-important';
 import React, { PropTypes } from 'react';
-import classes from './styles';
+import styles from './styles';
 import colors from './colors';
+
+const classes = StyleSheet.create(styles);
 
 function Chip ({
 	className,

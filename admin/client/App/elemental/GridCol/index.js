@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-import { css } from 'glamor';
+import { StyleSheet, css } from 'aphrodite/no-important';
 
 import theme from '../../../theme';
 
@@ -64,12 +64,12 @@ GridCol.propTypes = {
 	xsmall: PropTypes.string,
 };
 
-const classes = {
+const classes = StyleSheet.create({
 	...prepareWidths('xsmall', WIDTHS),
 	...prepareWidths('small', WIDTHS),
 	...prepareWidths('medium', WIDTHS),
 	...prepareWidths('large', WIDTHS),
-};
+});
 
 /* eslint-disable guard-for-in */
 function prepareWidths (prefix, obj) {

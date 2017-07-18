@@ -1,4 +1,4 @@
-import { css } from 'glamor';
+import { css, StyleSheet } from 'aphrodite/no-important';
 import React, { PropTypes } from 'react';
 import theme from '../../../../theme';
 import { darken } from '../../../../utils/color';
@@ -50,7 +50,7 @@ const clearHoverAndFocusStyles = {
 	textDecoration: 'none',
 };
 
-const classes = {
+const classes = StyleSheet.create({
 	wrapper: {
 		position: 'relative',
 	},
@@ -73,6 +73,6 @@ const classes = {
 			color: darken(theme.color.danger, 10),
 		},
 	},
-};
+});
 
 module.exports = ListHeaderSearch;

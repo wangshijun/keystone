@@ -1,4 +1,4 @@
-import { css } from 'glamor';
+import { css, StyleSheet } from 'aphrodite/no-important';
 import React, { PropTypes } from 'react';
 import theme from '../../../theme';
 
@@ -35,7 +35,7 @@ BlankState.defaultProps = {
 
 /* eslint quote-props: ["error", "as-needed"] */
 
-const classes = {
+const classes = StyleSheet.create({
 	container: {
 		backgroundColor: theme.blankstate.background,
 		borderRadius: theme.blankstate.borderRadius,
@@ -54,6 +54,6 @@ const classes = {
 			marginBottom: 0,
 		},
 	},
-};
+});
 
 module.exports = BlankState;

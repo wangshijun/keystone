@@ -1,4 +1,4 @@
-import { css } from 'glamor';
+import { css, StyleSheet } from 'aphrodite/no-important';
 import React, { PropTypes } from 'react';
 import { Spinner } from '../../admin/client/App/elemental';
 import theme from '../../admin/client/theme';
@@ -51,7 +51,7 @@ const hoverAndFocusStyles = {
 	borderColor: theme.input.border.color.focus,
 	outline: 'none',
 };
-const classes = {
+const classes = StyleSheet.create({
 	base: {
 		backgroundColor: 'white',
 		borderRadius: theme.borderRadius.default,
@@ -87,6 +87,6 @@ const classes = {
 		textAlign: 'center',
 		top: GUTTER_WIDTH,
 	},
-};
+});
 
 module.exports = ImageThumbnail;

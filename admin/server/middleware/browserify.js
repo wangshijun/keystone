@@ -26,37 +26,19 @@ function logError (file, err) {
 	console.log(ts() + chalk.red('error building ' + chalk.underline(file) + ':') + '\n' + err.message);
 }
 
-module.exports = function (opts) {
-	var stream = opts.stream;
-	var expose = opts.expose;
-	var file = opts.file;
-	var hash = opts.hash;
-	var writeToDisk = opts.writeToDisk;
-
+module.exports = function (file, name) {
 	var b;
 	var building = false;
 	var queue = [];
+	var ready;
 	var src;
-	var etag;
-
-	var logName = file.replace(/^\.\//, '');
+	var logName = typeof file === 'string' ? file.replace(/^\.\//, '') : name;
 	var fileName = logName;
-	var outputFilename = path.resolve(path.join(__dirname, '../../bundles/js', hash + '-' + fileName));
-
-	function updateBundle (newSrc) {
-		src = newSrc;
-		etag = crypto.createHash('md5').update(src).digest('hex').slice(0, 6);
-	}
-
+	if (fileName.substr(-3) !== '.js') fileName += '.js';
 	function writeBundle (buff) {
-		if (devWriteBundles || writeToDisk) {
-			fs.outputFile(outputFilename, buff, 'utf8', function (err) {
-				if (err) {
-					return logError(fileName, err);
-				}
-			});
+		if (devWriteBundles) {
+			fs.outputFile(path.resolve(path.join(__dirname, '../../bundles/js', fileName)), buff, 'utf8');
 		}
-
 		if (devWriteDisc) {
 			var discFile = fileName.replace('.js', '.html');
 			require('disc').bundle(buff, function (err, html) {
@@ -69,7 +51,6 @@ module.exports = function (opts) {
 			});
 		}
 	}
-
 	function build () {
 		if (building) return;
 		building = true;
@@ -86,75 +67,59 @@ module.exports = function (opts) {
 		if (devWriteDisc) {
 			opts.fullPaths = true;
 		}
-
-		if (stream) {
+		if (name) {
 			b = browserify(opts);
-			b.require(stream, { expose: expose });
+			b.require(file, { expose: name });
 		} else {
 			b = browserify(file, opts);
 		}
-
 		b.transform(babelify);
 		b.exclude('FieldTypes');
 		packages.forEach(function (i) {
 			b.exclude(i);
 		});
-
 		if (devMode) {
 			b = watchify(b, { poll: 500 });
 		}
-
 		b.bundle(function (err, buff) {
 			if (err) return logError(logName, err);
-			updateBundle(buff);
+			src = buff;
+			ready = true;
 			queue.forEach(function (reqres) {
 				send.apply(null, reqres);
 			});
 			writeBundle(buff);
 		});
-
 		b.on('update', function () {
 			b.bundle(function (err, buff) {
 				if (err) return logError(logName, err);
 				else logRebuild(logName);
-				updateBundle(buff);
+				src = buff;
 				writeBundle(buff);
 			});
 		});
 	}
-
 	function serve (req, res) {
-		if (src) {
-			return send(req, res);
+		if (!ready) {
+			build();
+			queue.push([req, res]);
+			return;
 		}
-
-		fs.readFile(outputFilename, function (err, data) {
-			if (data) {
-				updateBundle(data);
-				if (devMode) {
-					build();
-				}
-				send(req, res);
-			} else {
-				queue.push([req, res]);
-				build();
-			}
-		});
+		send(req, res);
 	}
-
 	function send (req, res) {
 		res.setHeader('Content-Type', 'application/javascript');
-
+		var etag = crypto.createHash('md5').update(src).digest('hex').slice(0, 6);
 		if (req.get && (etag === req.get('If-None-Match'))) {
 			res.status(304);
 			res.end();
-		} else {
-			res.set('ETag', etag);
-			res.set('Vary', 'Accept-Encoding');
+		}
+		else {
+			res.setHeader('ETag', etag);
+			res.setHeader('Vary', 'Accept-Encoding');
 			res.send(src);
 		}
 	}
-
 	return {
 		serve: serve,
 		build: build,

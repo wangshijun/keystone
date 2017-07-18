@@ -1,4 +1,4 @@
-import { css } from 'glamor';
+import { css, StyleSheet } from 'aphrodite/no-important';
 import React, { cloneElement, Children, PropTypes } from 'react';
 
 // NOTE: only accepts InlineGroupSection as a single child
@@ -68,13 +68,13 @@ InlineGroup.defaultProps = {
 	component: 'div',
 };
 
-const classes = {
+const classes = StyleSheet.create({
 	group: {
 		display: 'inline-flex',
 	},
 	block: {
 		display: 'flex',
 	},
-};
+});
 
 module.exports = InlineGroup;
