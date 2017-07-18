@@ -33,4 +33,3 @@ reports
 
 test/e2e/drivers/*
 
-yarn.lock
