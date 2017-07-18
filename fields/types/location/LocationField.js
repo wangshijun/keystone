@@ -231,7 +231,7 @@ module.exports = Field.create({
 			/>
 		) : null;
 		return (
-			<FormField offsetAbsentLabel>
+			<FormField offsetAbsentLabel displayType={this.props.displayType}>
 				<LabelledControl
 					checked={this.state.improve}
 					label="Autodetect and improve location on save"
@@ -249,7 +249,7 @@ module.exports = Field.create({
 		const { note } = this.props;
 		if (!note) return null;
 		return (
-			<FormField offsetAbsentLabel>
+			<FormField offsetAbsentLabel displayType={this.props.displayType}>
 				<FormNote note={note} />
 			</FormField>
 		);

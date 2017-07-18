@@ -15,11 +15,8 @@ function generateId () {
 	return i++;
 };
 
-const ItemDom = ({ name, id, onRemove, children }) => (
-	<div style={{
-		borderTop: '2px solid #eee',
-		paddingTop: 15,
-	}}>
+const ItemDom = ({ name, id, onRemove, itemDomstyle, children }) => (
+	<div style={itemDomstyle}>
 		{name && <input type="hidden" name={name} value={id}/>}
 		{children}
 		<div style={{ textAlign: 'right', paddingBottom: 10 }}>
@@ -71,7 +68,7 @@ module.exports = Field.create({
 		const value = [...head, item, ...tail];
 		onChange({ path, value });
 	},
-	renderFieldsForItem (index, value) {
+	renderFieldsForItem (index, value, displayType) {
 		return Object.keys(this.props.fields).map((path) => {
 			const field = this.props.fields[path];
 			if (typeof Fields[field.type] !== 'function') {
@@ -84,32 +81,51 @@ module.exports = Field.create({
 			props.mode = 'edit';
 			props.inputNamePrefix = `${this.props.path}[${index}]`;
 			props.key = field.path;
+			props.displayType = displayType;
 			// TODO ?
 			// if (props.dependsOn) {
 			// 	props.currentDependencies = {};
 			// 	Object.keys(props.dependsOn).forEach(dep => {
 			// 		props.currentDependencies[dep] = this.state.values[dep];
 			// 	});
-			// }
+
 			return React.createElement(Fields[field.type], props);
 		}, this);
 	},
 	renderItems () {
-		const { value = [], path } = this.props;
+		const { value = [], path, displayType = 'default' } = this.props;
 		const onAdd = this.addItem;
+		const style = displayType === 'gallery' ? { display: 'flex', flexDirection: 'row', flexWrap: 'wrap' } : {};
+		const itemDomstyle = displayType === 'gallery'
+		? {
+			display: 'flex',
+			flexDirection: 'column',
+			alignItems: 'flex-start',
+			flex: 1,
+			width: 214,
+			margin: 5,
+			marginLeft: 0,
+			marginBottom: 15,
+			padding: 5,
+			border: '2px solid #eee' } : {
+				borderTop: '2px solid #eee',
+				paddingTop: 15,
+			};
 		return (
 			<div>
-				{value.map((value, index) => {
-					const { id, _isNew } = value;
-					const name = !_isNew && `${path}[${index}][id]`;
-					const onRemove = e => this.removeItem(index);
+				<div style={style}>
+					{value.map((value, index) => {
+						const { id, _isNew } = value;
+						const name = !_isNew && `${path}[${index}][id]`;
+						const onRemove = e => this.removeItem(index);
 
-					return (
-						<ItemDom key={id} {...{ id, name, onRemove }}>
-							{this.renderFieldsForItem(index, value)}
-						</ItemDom>
-					);
-				})}
+						return (
+							<ItemDom key={id} {...{ id, name, onRemove, itemDomstyle }}>
+								{this.renderFieldsForItem(index, value, displayType)}
+							</ItemDom>
+						);
+					})}
+				</div>
 				<GlyphButton color="success" glyph="plus" position="left" onClick={onAdd}>
 					Add
 				</GlyphButton>

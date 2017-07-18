@@ -290,7 +290,7 @@ module.exports = Field.create({
 		const { thumbnails } = this.state;
 
 		return (
-			<FormField label={label} className="field-type-cloudinaryimages" htmlFor={path}>
+			<FormField label={label} className="field-type-cloudinaryimages" htmlFor={path} displayType={this.props.displayType}>
 				<div>
 					{thumbnails}
 				</div>

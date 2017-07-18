@@ -26,6 +26,7 @@ class FormField extends Component {
 			htmlFor,
 			label,
 			offsetAbsentLabel,
+			displayType,
 			...props
 		} = this.props;
 
@@ -41,6 +42,13 @@ class FormField extends Component {
 		if (offsetAbsentLabel && labelWidth) {
 			props.style = {
 				paddingLeft: labelWidth,
+				...props.style,
+			};
+		}
+
+		if (displayType === 'gallery') {
+			props.style = {
+				display: 'block',
 				...props.style,
 			};
 		}
