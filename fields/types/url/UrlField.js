@@ -3,7 +3,7 @@ import Field from '../Field';
 import { GlyphButton, FormInput } from '../../../admin/client/App/elemental';
 
 const isImageUrl = (url) => {
-	const pattern = /\w\.(png|jpg|jpeg|gif)$/;
+	const pattern = /\w\.(png|jpg|jpeg|gif)$/i;
 	return pattern.test(url.split('?').shift());
 };
 
@@ -79,4 +79,3 @@ module.exports = Field.create({
 		);
 	},
 });
-
