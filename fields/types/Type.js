@@ -15,6 +15,7 @@ var DEFAULT_OPTION_KEYS = [
 	'path',
 	'paths',
 	'type',
+	'displayType',
 	'label',
 	'note',
 	'size',
