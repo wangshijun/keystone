@@ -49,7 +49,7 @@ var LocalFilesFieldItem = React.createClass({
 		}
 
 		return (
-			<FormField displayType={this.props.displayType}>
+			<FormField grid={this.props.grid}>
 				<img key="file-type-icon" className="file-icon" src={Keystone.adminPath + '/images/icons/32/' + iconName + '.png'} />
 				<FormInput key="file-name" noedit className="field-type-localfiles__filename">
 					{filename}
@@ -199,7 +199,7 @@ module.exports = Field.create({
 
 	renderUI () {
 		return (
-			<FormField label={this.props.label} className="field-type-localfiles" htmlFor={this.props.path} displayType={this.props.displayType}>
+			<FormField label={this.props.label} className="field-type-localfiles" htmlFor={this.props.path} grid={this.props.grid}>
 				{this.renderFieldAction()}
 				{this.renderUploadsField()}
 				{this.renderFileField()}

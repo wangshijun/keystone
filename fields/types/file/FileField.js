@@ -206,7 +206,7 @@ module.exports = Field.create({
 
 		return (
 			<div data-field-name={path} data-field-type="file">
-				<FormField label={label} htmlFor={path} displayType={this.props.displayType}>
+				<FormField label={label} htmlFor={path} grid={this.props.grid}>
 					{this.shouldRenderField() ? (
 						<div>
 							{this.hasFile() && this.renderFileNameAndChangeMessage()}

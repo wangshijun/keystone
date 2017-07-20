@@ -27,6 +27,18 @@ const ItemDom = ({ name, id, onRemove, itemDomstyle, children }) => (
 	</div>
 );
 
+const getGridSize = (grid) => {
+	if (typeof grid === 'number' || Number(grid)) {
+		return Number(grid);
+	}
+
+	if (typeof grid === 'string' && grid.indexOf('%') > 0) {
+		return grid;
+	}
+
+	return 224;
+};
+
 module.exports = Field.create({
 	displayName: 'ListField',
 	statics: {
@@ -68,7 +80,7 @@ module.exports = Field.create({
 		const value = [...head, item, ...tail];
 		onChange({ path, value });
 	},
-	renderFieldsForItem (index, value, displayType) {
+	renderFieldsForItem (index, value, grid) {
 		return Object.keys(this.props.fields).map((path) => {
 			const field = this.props.fields[path];
 			if (typeof Fields[field.type] !== 'function') {
@@ -81,7 +93,7 @@ module.exports = Field.create({
 			props.mode = 'edit';
 			props.inputNamePrefix = `${this.props.path}[${index}]`;
 			props.key = field.path;
-			props.displayType = displayType;
+			props.grid = grid;
 			// TODO ?
 			// if (props.dependsOn) {
 			// 	props.currentDependencies = {};
@@ -93,15 +105,16 @@ module.exports = Field.create({
 		}, this);
 	},
 	renderItems () {
-		const { value = [], path, displayType = 'default' } = this.props;
+		const { value = [], path, grid } = this.props;
 		const onAdd = this.addItem;
-		const style = displayType === 'gallery' ? { display: 'flex', flexDirection: 'row', flexWrap: 'wrap' } : {};
-		const itemDomstyle = displayType === 'gallery'
+		const gridSize = grid ? getGridSize(grid) : undefined;
+		const style = grid ? { display: 'flex', flexDirection: 'row', flexWrap: 'wrap' } : {};
+		const itemDomstyle = grid
 		? {
 			display: 'flex',
 			flexDirection: 'column',
 			alignItems: 'flex-start',
-			width: 224,
+			width: gridSize,
 			margin: 10,
 			marginLeft: 0,
 			marginBottom: 15,
@@ -121,7 +134,7 @@ module.exports = Field.create({
 
 						return (
 							<ItemDom key={id} {...{ id, name, onRemove, itemDomstyle }}>
-								{this.renderFieldsForItem(index, value, displayType)}
+								{this.renderFieldsForItem(index, value, grid)}
 							</ItemDom>
 						);
 					})}

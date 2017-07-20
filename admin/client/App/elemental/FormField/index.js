@@ -26,7 +26,7 @@ class FormField extends Component {
 			htmlFor,
 			label,
 			offsetAbsentLabel,
-			displayType,
+			grid,
 			...props
 		} = this.props;
 
@@ -46,7 +46,7 @@ class FormField extends Component {
 			};
 		}
 
-		if (displayType === 'gallery') {
+		if (grid === 'gallery') {
 			props.style = {
 				display: 'block',
 				...props.style,

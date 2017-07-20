@@ -320,7 +320,7 @@ module.exports = Field.create({
 			: <FormInput noedit />;
 
 		return (
-			<FormField label={label} className="field-type-cloudinaryimage" htmlFor={path} displayType={this.props.displayType}>
+			<FormField label={label} className="field-type-cloudinaryimage" htmlFor={path} grid={this.props.grid}>
 				{imageContainer}
 				{toolbar}
 				{!!note && <FormNote note={note} />}

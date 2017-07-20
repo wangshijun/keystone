@@ -63,14 +63,14 @@ module.exports = Field.create({
 	renderUI () {
 		if (!this.props.value.exists) {
 			return (
-				<FormField label={this.props.label} displayType={this.props.displayType}>
+				<FormField label={this.props.label} grid={this.props.grid}>
 					<FormInput noedit>(not set)</FormInput>
 				</FormField>
 			);
 		}
 		return (
 			<div>
-				<FormField key="provider" label={this.props.label} displayType={this.props.displayType}>
+				<FormField key="provider" label={this.props.label} grid={this.props.grid}>
 					<FormInput noedit>{this.props.value.providerName} {this.props.value.type}</FormInput>
 				</FormField>
 				{this.renderValue('title', 'Title')}
