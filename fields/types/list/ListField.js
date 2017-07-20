@@ -113,6 +113,7 @@ module.exports = Field.create({
 		return (
 			<div>
 				<div style={style}>
+					{value.length === 0 && <input type="hidden" name={path} value="" />}
 					{value.map((value, index) => {
 						const { id, _isNew } = value;
 						const name = !_isNew && `${path}[${index}][id]`;
