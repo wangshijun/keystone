@@ -45,7 +45,6 @@ module.exports = Field.create({
 				className="keystone-image-thumbnail"
 				onClick={this.openValue}
 				title={'Open ' + this.props.value + ' in a new tab'}
-				height={120}
 				width="100%"
 			/>
 		);
