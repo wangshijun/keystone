@@ -40,12 +40,13 @@ module.exports = Field.create({
 
 		return (
 			<img
+				style={{ maxWidth: '200px' }}
 				src={this.props.value}
 				className="keystone-image-thumbnail"
 				onClick={this.openValue}
 				title={'Open ' + this.props.value + ' in a new tab'}
 				height={120}
-				width={200}
+				width="100%"
 			/>
 		);
 	},

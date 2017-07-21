@@ -36,7 +36,7 @@ const getGridSize = (grid) => {
 		return grid;
 	}
 
-	return 224;
+	return '18%';
 };
 
 module.exports = Field.create({
@@ -112,9 +112,11 @@ module.exports = Field.create({
 		const itemDomstyle = grid
 		? {
 			display: 'flex',
+			boxSizing: 'border-box',
 			flexDirection: 'column',
 			alignItems: 'flex-start',
 			width: gridSize,
+			maxWidth: 224,
 			margin: 10,
 			marginLeft: 0,
 			marginBottom: 15,
@@ -139,7 +141,7 @@ module.exports = Field.create({
 						);
 					})}
 				</div>
-				<GlyphButton color="success" glyph="plus" position="left" onClick={onAdd}>
+				<GlyphButton color="success" glyph="plus" size="small" position="left" onClick={onAdd}>
 					Add
 				</GlyphButton>
 			</div>
@@ -149,7 +151,7 @@ module.exports = Field.create({
 		const { label, value } = this.props;
 		return (
 			<div className={css(classes.container)}>
-				<h3 data-things="whatever">{label}</h3>
+				<h3 data-things="whatever" className={css(classes.header)}>{label}</h3>
 				{this.shouldRenderField() ? (
 					this.renderItems()
 				) : (
@@ -164,7 +166,9 @@ module.exports = Field.create({
 const classes = StyleSheet.create({
 	container: {
 		marginTop: '2em',
-		paddingLeft: '2em',
-		boxShadow: '-3px 0 0 rgba(0, 0, 0, 0.1)',
+	},
+	header: {
+		borderBottom: '2px solid #DEDEDE',
+		paddingBottom: '8px',
 	},
 });
