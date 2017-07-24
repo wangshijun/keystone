@@ -39,14 +39,28 @@ module.exports = Field.create({
 		if (!isImageUrl(this.props.value)) return null;
 
 		return (
-			<img
-				style={{ maxWidth: '200px' }}
-				src={this.props.value}
-				className="keystone-image-thumbnail"
-				onClick={this.openValue}
-				title={'Open ' + this.props.value + ' in a new tab'}
-				width="100%"
-			/>
+			<div>
+				<img
+					style={{ maxWidth: '200px' }}
+					src={this.props.value}
+					className="keystone-image-thumbnail"
+					onClick={this.openValue}
+					onLoad={e => {
+						this.setState({width: e.target.naturalWidth, height: e.target.naturalHeight});
+					}}
+					title={'Open ' + this.props.value + ' in a new tab'}
+					width="100%"
+				/>
+				<span style={{ 
+						position: 'absolute',
+						left: '0px',
+						color: '#fff',
+						fontSize: 'large'
+					  }}
+				>
+				{this.state.width + ' * ' + this.state.height}
+				</span>
+			</div>	
 		);
 	},
 	renderInput () {
