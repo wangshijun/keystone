@@ -46,20 +46,24 @@ module.exports = Field.create({
 					className="keystone-image-thumbnail"
 					onClick={this.openValue}
 					onLoad={e => {
-						this.setState({width: e.target.naturalWidth, height: e.target.naturalHeight});
+						const img = new Image();
+						img.src = e.target.src;
+						this.setState({ size: { width: img.width, height: img.height } });
 					}}
 					title={'Open ' + this.props.value + ' in a new tab'}
 					width="100%"
 				/>
-				<span style={{ 
-						position: 'absolute',
-						left: '0px',
-						color: '#fff',
-						fontSize: 'large'
-					  }}
-				>
-				{this.state.width + ' * ' + this.state.height}
-				</span>
+				{this.state.size && 
+					<span style={{ 
+							position: 'absolute',
+							left: '0px',
+							color: '#fff',
+							fontSize: 'large'
+						}}
+					>
+					{this.state.size.width + ' * ' + this.state.size.height}
+					</span>
+				}
 			</div>	
 		);
 	},
