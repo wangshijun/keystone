@@ -46,9 +46,7 @@ module.exports = Field.create({
 					className="keystone-image-thumbnail"
 					onClick={this.openValue}
 					onLoad={e => {
-						const img = new Image();
-						img.src = e.target.src;
-						this.setState({ realSize: { width: e.target.naturalWidth || img.width, height: e.target.naturalHeight || img.height } });
+						this.setState({ realSize: { width: e.target.naturalWidth || e.target.width, height: e.target.naturalHeight || e.target.height } });
 					}}
 					title={'Open ' + this.props.value + ' in a new tab'}
 					width="100%"
