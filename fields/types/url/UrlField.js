@@ -64,7 +64,7 @@ module.exports = Field.create({
 					{this.state.realSize.width + ' * ' + this.state.realSize.height}
 					</span>
 				}
-			</div>	
+			</div>
 		);
 	},
 	renderInput () {
