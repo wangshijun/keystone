@@ -48,20 +48,20 @@ module.exports = Field.create({
 					onLoad={e => {
 						const img = new Image();
 						img.src = e.target.src;
-						this.setState({ realSize: { width: img.width, height: img.height } });
+						this.setState({ realSize: { width: e.target.naturalWidth || img.width, height: e.target.naturalHeight || img.height } });
 					}}
 					title={'Open ' + this.props.value + ' in a new tab'}
 					width="100%"
 				/>
-				{this.state.realSize && 
-					<span style={{ 
-							position: 'absolute',
-							left: '0px',
-							color: '#fff',
-							fontSize: 'large'
-						}}
+				{this.state.realSize &&
+					<span style={{
+						position: 'absolute',
+						left: '0px',
+						color: '#fff',
+						fontSize: 'large',
+					}}
 					>
-					{this.state.realSize.width + ' * ' + this.state.realSize.height}
+						{this.state.realSize.width + ' * ' + this.state.realSize.height}
 					</span>
 				}
 			</div>
