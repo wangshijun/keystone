@@ -13,12 +13,12 @@ var definePrototypeGetters = require('../../utils/definePrototypeGetters');
 function relationship (list, path, options) {
 	this.many = (options.many) ? true : false;
 	this.filters = options.filters;
-	this.fieldKey = options.fieldKey;
+	this.createInlineOptions = options.createInlineOptions;
 	this.createInline = (options.createInline) ? true : false;
 	this._defaultSize = 'full';
 	this._nativeType = keystone.mongoose.Schema.Types.ObjectId;
 	this._underscoreMethods = ['format', 'getExpandedData'];
-	this._properties = ['isValid', 'many', 'filters', 'createInline', 'fieldKey'];
+	this._properties = ['isValid', 'many', 'filters', 'createInline', 'createInlineOptions'];
 	relationship.super_.call(this, list, path, options);
 }
 relationship.properName = 'Relationship';

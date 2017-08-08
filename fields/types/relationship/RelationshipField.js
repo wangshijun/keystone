@@ -22,15 +22,6 @@ function compareValues (current, next) {
 	return true;
 }
 
-function getCurrentId (data, key) {
-	if (!key) return;
-	const keyArr = key.split('.');
-	for (let i = 0; i < keyArr.length; i += 1) {
-		data = data[keyArr[i]];
-	}
-	return data;
-}
-
 module.exports = Field.create({
 
 	displayName: 'RelationshipField',
@@ -186,7 +177,7 @@ module.exports = Field.create({
 			const values = this.state.value.map((item) => item.id);
 			values.push(item.id);
 			this.valueChanged(values.join(','));
-			if (this.props.fieldKey && this.props.fieldKey.createAndopen) {
+			if (this.props.createInlineOptions && this.props.createInlineOptions.createAndopen) {
 				window.location.href = item.href;
 			}
 		} else {
@@ -255,8 +246,11 @@ module.exports = Field.create({
 	},
 
 	renderField () {
-		if (!window.data.currentId && this.props.fieldKey) {
-			window.data.currentId = getCurrentId(window.data, this.props.fieldKey.fieldId);
+		if (!window.data.currentId && this.props.createInlineOptions) {
+			window.data.currentId = window.data[this.props.createInlineOptions.fieldId];
+			if (!window.data.currentId) {
+				window.data.currentId = window.data.fields && window.data.fields[this.props.createInlineOptions.fieldId];
+			}
 		}
 		if (this.props.createInline) {
 			return this.renderInputGroup();
