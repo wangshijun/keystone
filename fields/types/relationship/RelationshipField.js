@@ -246,11 +246,9 @@ module.exports = Field.create({
 	},
 
 	renderField () {
-		if (!window.data.currentId && this.props.createInlineOptions) {
-			window.data.currentId = window.data[this.props.createInlineOptions.fieldId];
-			if (!window.data.currentId) {
-				window.data.currentId = window.data.fields && window.data.fields[this.props.createInlineOptions.fieldId];
-			}
+		const createInlineOptions = this.props.createInlineOptions;
+		if (!window.data.currentId && createInlineOptions) {
+			window.data.currentId = window.data[createInlineOptions.fieldId] || (window.data.fields && window.data.fields[createInlineOptions.fieldId]);
 		}
 		if (this.props.createInline) {
 			return this.renderInputGroup();
