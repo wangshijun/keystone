@@ -186,7 +186,9 @@ module.exports = Field.create({
 			const values = this.state.value.map((item) => item.id);
 			values.push(item.id);
 			this.valueChanged(values.join(','));
-			window.location.href = item.href;
+			if (this.props.fieldKey && this.props.fieldKey.createAndopen) {
+				window.location.href = item.href;
+			}
 		} else {
 			this.valueChanged(item.id);
 		}
@@ -199,7 +201,7 @@ module.exports = Field.create({
 		this.closeCreate();
 	},
 
-	renderSelect (noedit, currentId) {
+	renderSelect (noedit) {
 		return (
 			<Select.Async
 				multi={this.props.many}
@@ -209,7 +211,6 @@ module.exports = Field.create({
 				name={this.getInputName(this.props.path)}
 				onChange={this.valueChanged}
 				simpleValue
-				currentId={currentId}
 				value={this.state.value || (window.data && window.data.currentId)}
 				valueKey="id"
 			/>
@@ -254,8 +255,8 @@ module.exports = Field.create({
 	},
 
 	renderField () {
-		if (!window.data.currentId) {
-			window.data.currentId = getCurrentId(window.data, this.props.fieldKey);
+		if (!window.data.currentId && this.props.fieldKey) {
+			window.data.currentId = getCurrentId(window.data, this.props.fieldKey.fieldId);
 		}
 		if (this.props.createInline) {
 			return this.renderInputGroup();
