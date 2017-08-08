@@ -22,6 +22,15 @@ function compareValues (current, next) {
 	return true;
 }
 
+function getCurrentId (data, key) {
+	if (!key) return;
+	const keyArr = key.split('.');
+	for (let i = 0; i < keyArr.length; i += 1) {
+		data = data[keyArr[i]];
+	}
+	return data;
+}
+
 module.exports = Field.create({
 
 	displayName: 'RelationshipField',
@@ -200,7 +209,7 @@ module.exports = Field.create({
 				onChange={this.valueChanged}
 				simpleValue
 				currentId={currentId}
-				value={this.state.value || currentId}
+				value={this.state.value || (window.data && window.data.currentId)}
 				valueKey="id"
 			/>
 		);
@@ -244,10 +253,13 @@ module.exports = Field.create({
 	},
 
 	renderField () {
+		if (!window.data.currentId) {
+			window.data.currentId = getCurrentId(window.data, this.props.fieldKey);
+		}
 		if (this.props.createInline) {
 			return this.renderInputGroup();
 		} else {
-			return this.renderSelect(undefined, window.currentId);
+			return this.renderSelect();
 		}
 	},
 
