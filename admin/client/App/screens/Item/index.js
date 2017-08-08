@@ -152,6 +152,7 @@ var ItemView = React.createClass({
 			);
 		}
 
+		window.data = this.props.data;
 		// When we have the data, render the item view with it
 		return (
 			<div data-screen-id="item">

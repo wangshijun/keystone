@@ -177,6 +177,9 @@ module.exports = Field.create({
 			const values = this.state.value.map((item) => item.id);
 			values.push(item.id);
 			this.valueChanged(values.join(','));
+			if (this.props.createInlineOptions && this.props.createInlineOptions.createAndopen) {
+				window.location.href = item.href;
+			}
 		} else {
 			this.valueChanged(item.id);
 		}
@@ -199,7 +202,7 @@ module.exports = Field.create({
 				name={this.getInputName(this.props.path)}
 				onChange={this.valueChanged}
 				simpleValue
-				value={this.state.value}
+				value={this.state.value || (window.data && window.data.currentId)}
 				valueKey="id"
 			/>
 		);
@@ -243,6 +246,10 @@ module.exports = Field.create({
 	},
 
 	renderField () {
+		const createInlineOptions = this.props.createInlineOptions;
+		if (!window.data.currentId && createInlineOptions) {
+			window.data.currentId = window.data[createInlineOptions.fieldId] || (window.data.fields && window.data.fields[createInlineOptions.fieldId]);
+		}
 		if (this.props.createInline) {
 			return this.renderInputGroup();
 		} else {
