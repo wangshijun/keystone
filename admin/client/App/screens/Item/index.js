@@ -152,6 +152,12 @@ var ItemView = React.createClass({
 			);
 		}
 
+		if (this.props.params.listId === 'hotels') {
+			window.currentId = this.props.params.itemId;
+		}
+		if (this.props.params.listId === 'hotel-rooms') {
+			window.currentId = this.props.data.fields.hotel;
+		}
 		// When we have the data, render the item view with it
 		return (
 			<div data-screen-id="item">

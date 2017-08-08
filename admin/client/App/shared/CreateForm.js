@@ -147,10 +147,6 @@ const CreateForm = React.createClass({
 			if (!focusWasSet) {
 				fieldProps.autoFocus = focusWasSet = true;
 			}
-			fieldProps.value = [];
-			if (window.location.pathname.indexOf('/admin/hotels/') !== -1) {
-				fieldProps.value.push(window.location.pathname.split('/').pop());
-			}
 			form.push(React.createElement(Fields[field.type], fieldProps));
 		});
 

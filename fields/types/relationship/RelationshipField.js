@@ -189,7 +189,7 @@ module.exports = Field.create({
 		this.closeCreate();
 	},
 
-	renderSelect (noedit) {
+	renderSelect (noedit, currentId) {
 		return (
 			<Select.Async
 				multi={this.props.many}
@@ -199,7 +199,8 @@ module.exports = Field.create({
 				name={this.getInputName(this.props.path)}
 				onChange={this.valueChanged}
 				simpleValue
-				value={this.state.value}
+				currentId={currentId}
+				value={this.state.value || currentId}
 				valueKey="id"
 			/>
 		);
@@ -246,7 +247,7 @@ module.exports = Field.create({
 		if (this.props.createInline) {
 			return this.renderInputGroup();
 		} else {
-			return this.renderSelect();
+			return this.renderSelect(undefined, window.currentId);
 		}
 	},
 
