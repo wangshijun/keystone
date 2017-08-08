@@ -186,6 +186,7 @@ module.exports = Field.create({
 			const values = this.state.value.map((item) => item.id);
 			values.push(item.id);
 			this.valueChanged(values.join(','));
+			window.location.href = item.href;
 		} else {
 			this.valueChanged(item.id);
 		}
