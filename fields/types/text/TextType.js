@@ -8,9 +8,10 @@ var utils = require('keystone-utils');
  * @api public
  */
 function text (list, path, options) {
+	this.isImportantField = (options.isImportantField) ? true : false;
 	this.options = options;
 	this._nativeType = String;
-	this._properties = ['monospace'];
+	this._properties = ['monospace', 'isImportantField'];
 	this._underscoreMethods = ['crop'];
 	text.super_.call(this, list, path, options);
 }

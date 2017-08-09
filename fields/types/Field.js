@@ -23,7 +23,7 @@ function validateSpec (spec) {
 
 var Base = module.exports.Base = {
 	getInitialState () {
-		return {};
+		return { isShowAlert: true };
 	},
 	getDefaultProps () {
 		return {
@@ -58,6 +58,21 @@ var Base = module.exports.Base = {
 		if (!this.refs[this.spec.focusTargetRef]) return;
 		findDOMNode(this.refs[this.spec.focusTargetRef]).focus();
 	},
+	onFocus () {
+		if (this.props.isImportantField) {
+			if (!this.state.isShowAlert) {
+				return;
+			}
+			alert('该字段会直接影响售价和公司财务，请确认后填写');
+			this.setState({
+				isShowAlert: false,
+			});
+			const timer = setTimeout(() => {
+				clearTimeout(timer);
+				this.setState({ isShowAlert: true });
+			}, 1000);
+		}
+	},
 	renderNote () {
 		if (!this.props.note) return null;
 
@@ -72,6 +87,7 @@ var Base = module.exports.Base = {
 				autoComplete: 'off',
 				name: this.getInputName(this.props.path),
 				onChange: this.valueChanged,
+				onFocus: this.onFocus,
 				ref: 'focusTarget',
 				value,
 			}} />
