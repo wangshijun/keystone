@@ -23,7 +23,7 @@ function validateSpec (spec) {
 
 var Base = module.exports.Base = {
 	getInitialState () {
-		return {};
+		return { isShowAlert: true };
 	},
 	getDefaultProps () {
 		return {
@@ -60,11 +60,17 @@ var Base = module.exports.Base = {
 	},
 	onFocus () {
 		if (this.props.isImportantField) {
-			if (this.state.isFocus) return;
+			if (!this.state.isShowAlert) {
+				return;
+			}
 			alert('该字段会直接影响售价和公司财务，请确认后填写');
 			this.setState({
-				isFocus: true,
+				isShowAlert: false,
 			});
+			const timer = setTimeout(() => {
+				clearTimeout(timer);
+				this.setState({ isShowAlert: true });
+			}, 1000);
 		}
 	},
 	renderNote () {
