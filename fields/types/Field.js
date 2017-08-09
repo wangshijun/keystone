@@ -58,6 +58,15 @@ var Base = module.exports.Base = {
 		if (!this.refs[this.spec.focusTargetRef]) return;
 		findDOMNode(this.refs[this.spec.focusTargetRef]).focus();
 	},
+	onFocus () {
+		if (this.props.isImportantField) {
+			if (this.state.isFocus) return;
+			alert('该字段会直接影响售价和公司财务，请确认后填写');
+			this.setState({
+				isFocus: true,
+			});
+		}
+	},
 	renderNote () {
 		if (!this.props.note) return null;
 
@@ -72,6 +81,7 @@ var Base = module.exports.Base = {
 				autoComplete: 'off',
 				name: this.getInputName(this.props.path),
 				onChange: this.valueChanged,
+				onFocus: this.onFocus,
 				ref: 'focusTarget',
 				value,
 			}} />
