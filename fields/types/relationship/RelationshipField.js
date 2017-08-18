@@ -247,7 +247,7 @@ module.exports = Field.create({
 
 	renderField () {
 		const createInlineOptions = this.props.createInlineOptions;
-		if (!window.data.currentId && createInlineOptions) {
+		if (window.data && !window.data.currentId && createInlineOptions) {
 			window.data.currentId = window.data[createInlineOptions.fieldId] || (window.data.fields && window.data.fields[createInlineOptions.fieldId]);
 		}
 		if (this.props.createInline) {
