@@ -62,16 +62,14 @@ module.exports = Field.create({
 				var fieldName = value.slice(1);
 
 				var val = this.props.values[fieldName];
-				console.log('========', this.props.filters, val);
 				if (val) {
 					filters[key] = val;
 					return;
 				}
 
 				// check if filtering by id and item was already saved
-				if (fieldName === ':_id' && Keystone.item) {
-					console.log('********', Keystone.item);
-					filters[key] = Keystone.item.id;
+				if (value === ':_id' && (Keystone.item || window.data)) {
+					filters[key] = (Keystone.item && Keystone.item.id) || window.data.currentId;
 					return;
 				}
 			} else {

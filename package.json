@@ -64,6 +64,7 @@
     "multer": "0.1.8",
     "numeral": "2.0.1",
     "object-assign": "4.1.0",
+    "on-finished": "^2.3.0",
     "qs": "4.0.0",
     "queryfilter": "0.0.4",
     "range_check": "1.4.0",
