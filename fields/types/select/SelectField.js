@@ -52,7 +52,6 @@ module.exports = Field.create({
 
 		return (
 			<Select
-				multi={this.props.many}
 				simpleValue
 				name={this.getInputName(path)}
 				value={value}
