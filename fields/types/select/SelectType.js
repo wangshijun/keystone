@@ -10,10 +10,11 @@ var utils = require('keystone-utils');
  */
 function select (list, path, options) {
 	this.ui = options.ui || 'select';
+	this.many = options.many ? true : false;
 	this.numeric = options.numeric ? true : false;
 	this._nativeType = (options.numeric) ? Number : String;
 	this._underscoreMethods = ['format', 'pluck'];
-	this._properties = ['ops', 'numeric'];
+	this._properties = ['ops', 'numeric', 'many'];
 	if (typeof options.options === 'string') {
 		options.options = options.options.split(',');
 	}
