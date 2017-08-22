@@ -62,6 +62,7 @@ module.exports = Field.create({
 				var fieldName = value.slice(1);
 
 				var val = this.props.values[fieldName];
+				console.log('========', this.props.filters, val);
 				if (val) {
 					filters[key] = val;
 					return;
@@ -69,6 +70,7 @@ module.exports = Field.create({
 
 				// check if filtering by id and item was already saved
 				if (fieldName === ':_id' && Keystone.item) {
+					console.log('********', Keystone.item);
 					filters[key] = Keystone.item.id;
 					return;
 				}
