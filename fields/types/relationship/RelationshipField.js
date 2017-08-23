@@ -68,8 +68,8 @@ module.exports = Field.create({
 				}
 
 				// check if filtering by id and item was already saved
-				if (fieldName === ':_id' && Keystone.item) {
-					filters[key] = Keystone.item.id;
+				if (fieldName === '_id' && (Keystone.item || window.data)) {
+					filters[key] = (Keystone.item && Keystone.item.id) || window.data.currentId;
 					return;
 				}
 			} else {
