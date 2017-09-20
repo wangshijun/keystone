@@ -23,6 +23,7 @@ var DEFAULT_OPTION_KEYS = [
 	'required',
 	'col',
 	'noedit',
+	'editBy',
 	'nocol',
 	'nosort',
 	'indent',
