@@ -52,6 +52,9 @@ var Base = module.exports.Base = {
 	},
 	shouldRenderField () {
 		if (this.props.mode === 'create') return true;
+		if (this.props.editBy && this.props.editBy.includes(this.props.value)) {
+		  return true;
+		}
 		return !this.props.noedit;
 	},
 	focus () {

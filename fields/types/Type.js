@@ -27,6 +27,7 @@ var DEFAULT_OPTION_KEYS = [
 	'nosort',
 	'indent',
 	'hidden',
+	'editBy',
 	'collapse',
 	'dependsOn',
 	'autoCleanup',
