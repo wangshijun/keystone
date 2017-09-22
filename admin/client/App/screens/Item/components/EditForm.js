@@ -153,7 +153,7 @@ var EditForm = React.createClass({
 							if(!this.isDone(customActionFormOptions)){
 								return this.setState({ alerts: { error: { error: '所有信息必须填写全' } } })
 							}
-
+                            this.setState({ loading: true });
 							this.callCustomAction(currentAction, this.props.data, customActionFormOptions);
 						}}
 						data-button="update"
@@ -179,6 +179,10 @@ var EditForm = React.createClass({
 	},
 
 	callCustomAction(customAction, value, sendData){
+		if (this.state.loading) {
+			return;
+		}
+
 		this.props.list.callCustomAction(customAction, value, sendData, (err, data) => {
 			const handleError = e => {
 				smoothScrollTop();
@@ -414,19 +418,15 @@ var EditForm = React.createClass({
 		const { customActions = [] } = this.props.list;
 		const { values } = this.state;
 		return customActions.filter(item => {
-			if (item.showWhere !== 'detail') {
+			if (item.pageName !== 'detail') {
 				return false;
 			}
 
-			if (!item.showBy) {
-				return true;
-			}
-			const flag = item.showBy.every(options => options.values.includes(values[options.key]))
-			if (flag) {
+			if (!item.dependsOn) {
 				return true;
 			}
 
-			return false;
+			return item.dependsOn.every(options => options.values.includes(values[options.key]));
 		})
 	},
 	renderFooterBar () {

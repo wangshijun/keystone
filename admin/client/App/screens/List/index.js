@@ -255,7 +255,7 @@ const ListView = React.createClass({
 	},
 	filterCustomActions(){
 		const { customActions = [] } = this.props.lists.currentList;
-		return customActions.filter(item => (item.showWhere === 'list'));
+		return customActions.filter(item => (item.pageName === 'list'));
 	},
 
 	renderHeader () {
