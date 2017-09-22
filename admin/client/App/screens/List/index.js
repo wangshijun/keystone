@@ -16,6 +16,7 @@ import {
 	GlyphButton,
 	Pagination,
 	Spinner,
+	LoadingButton,
 } from '../../elemental';
 
 import ListFilters from './components/Filtering/ListFilters';
@@ -38,6 +39,7 @@ import {
 	setActiveSort,
 	setCurrentPage,
 	selectList,
+	setFilter,
 	loadInitialItems,
 } from './actions';
 
@@ -251,10 +253,14 @@ const ListView = React.createClass({
 			/>
 		);
 	},
+	filterCustomActions(){
+		const { customActions = [] } = this.props.lists.currentList;
+		return customActions.filter(item => (item.showWhere === 'list'));
+	},
+
 	renderHeader () {
 		const items = this.props.items;
 		const { autocreate, nocreate, plural, singular } = this.props.currentList;
-
 		return (
 			<Container style={{ paddingTop: '2em' }}>
 				<ListHeaderTitle
@@ -304,6 +310,9 @@ const ListView = React.createClass({
 				/>
 			</Container>
 		);
+	},
+	handleCustomAction(customAction){
+		this.props.dispatch(setFilter(customAction.filter.key, customAction.filter.value));
 	},
 
 	// ==============================
@@ -414,9 +423,9 @@ const ListView = React.createClass({
 	},
 	showBlankState () {
 		return !this.props.loading
-				&& !this.props.items.results.length
-				&& !this.props.active.search
-				&& !this.props.active.filters.length;
+			&& !this.props.items.results.length
+			&& !this.props.active.search
+			&& !this.props.active.filters.length;
 	},
 	renderBlankState () {
 		const { currentList } = this.props;
@@ -450,6 +459,25 @@ const ListView = React.createClass({
 			</Container>
 		);
 	},
+
+	renderCustomActions() {
+		const customActions = this.filterCustomActions();
+
+		return (
+			<div style={{ paddingTop: 10, paddingLeft: 20 }}>
+				{customActions.map(item => (
+					<LoadingButton
+						color="primary"
+						disabled={false}
+						onClick={this.handleCustomAction.bind(this, item)}
+						data-button="update"
+					>
+						{item.name}
+					</LoadingButton>
+				))}
+			</div>);
+	},
+
 	renderActiveState () {
 		if (this.showBlankState()) return null;
 
@@ -465,6 +493,7 @@ const ListView = React.createClass({
 		return (
 			<div>
 				{this.renderHeader()}
+				{this.renderCustomActions()}
 				<Container>
 					<div style={{ height: 35, marginBottom: '1em', marginTop: '1em' }}>
 						{this.renderManagement()}
@@ -494,6 +523,7 @@ const ListView = React.createClass({
 								deleteTableItem={this.deleteTableItem}
 								handleSortSelect={this.handleSortSelect}
 								items={this.props.items}
+								listFilter={this.props.currentList.listFilter}
 								list={this.props.currentList}
 								manageMode={this.state.manageMode}
 								rowAlert={this.props.rowAlert}

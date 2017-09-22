@@ -110,9 +110,17 @@ module.exports = function (req, res) {
 					detail: err,
 				});
 			}
-			res.json(_.assign(req.list.getData(item, fields), {
+			const addData = req.list.options.addFields ? req.list.options.addFields.reduce((x, y) => {
+				x[y] = item[y];
+				return x;
+			}, {}) : {};
+			const data = _.assign(req.list.getData(item, fields), {
 				drilldown: drilldown,
-			}));
+			});
+
+			Object.assign(data.fields, addData)
+
+			res.json(data);
 		});
 	});
 };
