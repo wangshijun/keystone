@@ -137,7 +137,10 @@ var EditForm = React.createClass({
 			>
 				<h2 style={{ marginTop: '0.66em' }}>请填写相关信息</h2>
 				{alerts ? <AlertMessages alerts={this.state.alerts} /> : null}
-				{this.renderCustomFormFields(customActionFormOptions)}
+				<div style={{height: '500px', overflow: 'auto'}}>
+					{this.renderCustomFormFields(customActionFormOptions)}
+					{customActionFormOptions.length > 1 && <div style={{width: '100%', borderBottom: '1px solid #ddd'}}></div>  }
+				</div>
 				<div
 					style={{ display: 'flex', padding: '1em', justifyContent: 'space-around'}}
 				>
