@@ -151,7 +151,6 @@ var EditForm = React.createClass({
 								return this.setState({ alerts: { error: { error: '所有信息必须填写全' } } })
 							}
 
-							console.log(this.props.data);
 							this.callCustomAction(currentAction, this.props.data, customActionFormOptions);
 						}}
 						data-button="update"
@@ -177,8 +176,6 @@ var EditForm = React.createClass({
 	},
 
 	callCustomAction(customAction, value, sendData){
-		console.log(customAction, value, sendData);
-
 		this.props.list.callCustomAction(customAction, value, sendData, (err, data) => {
 			const handleError = e => {
 				smoothScrollTop();
@@ -201,6 +198,7 @@ var EditForm = React.createClass({
 				}
 
 				smoothScrollTop();
+				this.hideCustomActionsModal();
 				this.setState({
 					alerts: {
 						success: {
