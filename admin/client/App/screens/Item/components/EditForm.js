@@ -226,6 +226,9 @@ var EditForm = React.createClass({
 		const value = this.props.data;
 		if (customAction.needPrompt) {
 			promptValue = window.prompt(customAction.promptText);
+			if (!promptValue) {
+				return;
+			}
 		}
 		if (customAction.needForm) {
 			const optionsLength = customAction.formCount || this.getValue(customAction.formCountBy, value.fields).length || 1;
@@ -241,7 +244,7 @@ var EditForm = React.createClass({
 		}
 		this.setState({ loading: true });
 
-		this.callCustomAction(customAction, value);
+		this.callCustomAction(customAction, value, promptValue);
 	},
 
 	handleChange (event) {
