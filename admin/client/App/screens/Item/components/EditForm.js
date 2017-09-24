@@ -6,6 +6,7 @@ import {
 	FormField,
 	FormInput,
 	Grid,
+	Modal,
 	ResponsiveText,
 } from '../../../elemental';
 
@@ -27,7 +28,7 @@ import { deleteItem } from '../actions';
 
 import { upcase } from '../../../../utils/string';
 
-function getNameFromData (data) {
+function getNameFromData(data) {
 	if (typeof data === 'object') {
 		if (typeof data.first === 'string' && typeof data.last === 'string') {
 			return data.first + ' ' + data.last;
@@ -38,11 +39,11 @@ function getNameFromData (data) {
 	return data;
 }
 
-function smoothScrollTop () {
+function smoothScrollTop() {
 	if (document.body.scrollTop || document.documentElement.scrollTop) {
 		window.scrollBy(0, -250);
 		var timeOut = setTimeout(smoothScrollTop, 10);
-	}	else {
+	} else {
 		clearTimeout(timeOut);
 	}
 }
@@ -58,6 +59,9 @@ var EditForm = React.createClass({
 			values: assign({}, this.props.data.fields),
 			confirmationDialog: null,
 			loading: false,
+			isShowCustomActionModal: false,
+			customActionFormOptions: [],
+			currentAction: null,
 			lastValues: null, // used for resetting
 			focusFirstField: !this.props.list.nameField && !this.props.list.nameFieldIsFormHeader,
 		};
@@ -86,6 +90,163 @@ var EditForm = React.createClass({
 		props.mode = 'edit';
 		return props;
 	},
+
+	renderCustomFormFields(uiElements) {
+		return uiElements.map((fields, fieldsIndex) => fields.map((item, index) => {
+			const value = this.props.data.fields;
+			const props = {
+				mode: 'edit',
+				label: item.label,
+				value: item.value,
+				onChange: event => {
+					uiElements[fieldsIndex][index].value = event.value;
+					this.setState({ customActionFormOptions: uiElements });
+				}
+			};
+
+			if (item.type === 'select') {
+				props.ops = this.getValue(item.options, value).map(ops => {
+					return {
+						label: ops[item.ops.label],
+						value: ops[item.ops.value],
+					}
+				});
+			}
+
+			return React.createElement(Fields[item.type], props);
+		}));
+	},
+	hideCustomActionsModal() {
+		this.setState({
+			isShowCustomActionModal: false,
+			customActionFormOptions: [],
+		})
+	},
+
+	isDone(customActionFormOptions){
+		return customActionFormOptions.every(options => options.every(item => item.value));
+	},
+
+	renderCustomActionsModal() {
+		const { customActionFormOptions, loading, isShowCustomActionModal, alerts } = this.state;
+		return (
+			<Modal.Dialog
+				backdropClosesModal
+				onClose={this.hideCustomActionsModal.bind(this)}
+				isOpen={isShowCustomActionModal}
+			>
+				<h2 style={{ marginTop: '0.66em' }}>请填写相关信息</h2>
+				{alerts ? <AlertMessages alerts={this.state.alerts} /> : null}
+				<div style={{height: '500px', overflow: 'auto'}}>
+					{this.renderCustomFormFields(customActionFormOptions)}
+					{customActionFormOptions.length > 1 && <div style={{width: '100%', borderBottom: '1px solid #ddd'}}></div>  }
+				</div>
+				<div
+					style={{ display: 'flex', padding: '1em', justifyContent: 'space-around'}}
+				>
+					<LoadingButton
+						color="primary"
+						disabled={loading}
+						loading={loading}
+						onClick={() => {
+							const { currentAction, customActionFormOptions } = this.state;
+							if(!this.isDone(customActionFormOptions)){
+								return this.setState({ alerts: { error: { error: '所有信息必须填写全' } } })
+							}
+                            this.setState({ loading: true });
+							this.callCustomAction(currentAction, this.props.data, customActionFormOptions);
+						}}
+						data-button="update"
+					>
+						确定
+					</LoadingButton>
+					<Button disabled={loading} onClick={this.hideCustomActionsModal.bind(this)} color="cancel">
+						取消
+					</Button>
+				</div>
+			</Modal.Dialog>
+		)
+	},
+
+	getValue(str, obj) {
+		return str.split('.').reduce((x, y) => {
+			if (Array.isArray(x)) {
+				return x.map(item => item[y]);
+			}
+
+			return x[y]
+		}, obj);
+	},
+
+	callCustomAction(customAction, value, sendData){
+		if (this.state.loading) {
+			return;
+		}
+
+		this.props.list.callCustomAction(customAction, value, sendData, (err, data) => {
+			const handleError = e => {
+				smoothScrollTop();
+				this.hideCustomActionsModal();
+				this.setState({
+					alerts: {
+						error: { error: e.message },
+					},
+					loading: false,
+				});
+			};
+
+			if (err) {
+				return handleError(err)
+			}
+
+			this.props.list.loadItem(data._id, { drilldown: true }, (err, value) => {
+				if (err) {
+					return handleError(err);
+				}
+
+				smoothScrollTop();
+				this.hideCustomActionsModal();
+				this.setState({
+					alerts: {
+						success: {
+							success: 'Your changes have been saved successfully',
+						},
+					},
+					lastValues: this.state.values,
+					values: value.fields,
+					loading: false,
+				});
+
+			});
+		})
+	},
+
+	handleCustomAction(customAction){
+		let promptValue = '';
+		const value = this.props.data;
+		if (customAction.needPrompt) {
+			promptValue = window.prompt(customAction.promptText);
+			if (!promptValue) {
+				return;
+			}
+		}
+		if (customAction.needForm) {
+			const optionsLength = customAction.formCount || this.getValue(customAction.formCountBy, value.fields).length || 1;
+			const customActionFormOptions = [];
+			for (let i = 0; i < optionsLength; i++) {
+				customActionFormOptions.push(customAction.formKeys);
+			}
+			return this.setState({
+				isShowCustomActionModal: true,
+				currentAction: customAction,
+				customActionFormOptions: customActionFormOptions,
+			});
+		}
+		this.setState({ loading: true });
+
+		this.callCustomAction(customAction, value, promptValue);
+	},
+
 	handleChange (event) {
 		const values = assign({}, this.state.values);
 
@@ -256,6 +417,21 @@ var EditForm = React.createClass({
 			}
 		}, this);
 	},
+	filterCustomActions(){
+		const { customActions = [] } = this.props.list;
+		const { values } = this.state;
+		return customActions.filter(item => {
+			if (item.pageName !== 'detail') {
+				return false;
+			}
+
+			if (!item.dependsOn) {
+				return true;
+			}
+
+			return item.dependsOn.every(options => options.values.includes(values[options.key]));
+		})
+	},
 	renderFooterBar () {
 		if (this.props.list.noedit && this.props.list.nodelete) {
 			return null;
@@ -263,7 +439,7 @@ var EditForm = React.createClass({
 
 		const { loading } = this.state;
 		const loadingButtonText = loading ? 'Saving' : 'Save';
-
+		const customActions = this.filterCustomActions();
 		// Padding must be applied inline so the FooterBar can determine its
 		// innerHeight at runtime. Aphrodite's styling comes later...
 
@@ -281,6 +457,19 @@ var EditForm = React.createClass({
 							{loadingButtonText}
 						</LoadingButton>
 					)}
+					{
+						!this.props.list.noedit && customActions.map(item => (
+							<LoadingButton
+								color="primary"
+								disabled={loading}
+								loading={loading}
+								onClick={this.handleCustomAction.bind(this, item)}
+								data-button="update"
+							>
+								{item.name}
+							</LoadingButton>
+						))
+					}
 					{!this.props.list.noedit && (
 						<Button disabled={loading} onClick={this.toggleResetDialog} variant="link" color="cancel" data-button="reset">
 							<ResponsiveText
@@ -393,6 +582,7 @@ var EditForm = React.createClass({
 				>
 					<p>Reset your changes to <strong>{this.props.data.name}</strong>?</p>
 				</ConfirmationDialog>
+				{this.renderCustomActionsModal()}
 				<ConfirmationDialog
 					confirmationLabel="Delete"
 					isOpen={this.state.deleteDialogIsOpen}

@@ -17,7 +17,7 @@ const truthy = (i) => i;
  *
  * @return {Array}       The columns
  */
-function getColumns (list) {
+function getColumns(list) {
 	return list.uiElements.map((col) => {
 		if (col.type === 'heading') {
 			return { type: 'heading', content: col.content };
@@ -35,7 +35,7 @@ function getColumns (list) {
  *
  * @return {Object}            The corrected filters, keyed by path
  */
-function getFilters (filterArray) {
+function getFilters(filterArray) {
 	var filters = {};
 	filterArray.forEach((filter) => {
 		filters[filter.field.path] = filter.value;
@@ -50,7 +50,7 @@ function getFilters (filterArray) {
  *
  * @return {String}           All the sorting queries we want as a string
  */
-function getSortString (sort) {
+function getSortString(sort) {
 	return sort.paths.map(i => {
 		// If we want to sort inverted, we prefix a "-" before the sort path
 		return i.invert ? '-' + i.path : i.path;
@@ -60,7 +60,7 @@ function getSortString (sort) {
 /**
  * Build a query string from a bunch of options
  */
-function buildQueryString (options) {
+function buildQueryString(options) {
 	const query = {};
 	if (options.search) query.search = options.search;
 	if (options.filters.length) query.filters = JSON.stringify(getFilters(options.filters));
@@ -343,6 +343,37 @@ List.prototype.reorderItems = function (item, oldSortOrder, newSortOrder, pageOp
 			callback(null, body);
 		} else {
 			callback(body);
+		}
+	});
+};
+
+List.prototype.callCustomAction = function (customAction, data, formData, callback) {
+	const url = Keystone.adminPath + '/api' + customAction.url + (customAction.urlKey ? '/' + data[customAction.urlKey] : '');
+	if (customAction.dataKey) {
+		data[customAction.dataKey] = formData;
+	}
+
+	if (customAction.action === 'link') {
+		window.location.href = url;
+		return;
+	}
+
+
+	xhr({
+		url: url,
+		method: customAction.action,
+		headers: {
+			...Keystone.csrf.header,
+		},
+		json: true,
+		body: data,
+	}, (err, resp, body) => {
+		if (err) return callback(err);
+		// 所有的请求都会走我们自建的API
+		if (body.status === 200) {
+			callback(null, body.data);
+		} else {
+			callback(new Error(body.errmsg));
 		}
 	});
 };

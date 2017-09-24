@@ -174,6 +174,7 @@ var ItemView = React.createClass({
 								list={this.props.currentList}
 								data={this.props.data}
 								dispatch={this.props.dispatch}
+								loadItemData={loadItemData}
 								router={this.context.router}
 							/>
 						</Container>

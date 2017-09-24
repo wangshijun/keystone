@@ -26,6 +26,7 @@ exports.common = {
 		'height': theme.component.height,
 		'lineHeight': theme.component.lineHeight,
 		'marginBottom': 0,
+		'marginRight': 10,
 		'padding': `0 ${theme.button.paddingHorizontal}`,
 		'outline': 0,
 		'textAlign': 'center',

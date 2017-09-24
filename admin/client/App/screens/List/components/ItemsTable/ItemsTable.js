@@ -94,7 +94,7 @@ const ItemsTable = React.createClass({
 		);
 	},
 	render () {
-		const { items } = this.props;
+		const { items, listFilter } = this.props;
 		if (!items.results.length) return null;
 
 		const tableBody = (this.props.list.sortable) ? (
@@ -102,6 +102,21 @@ const ItemsTable = React.createClass({
 		) : (
 			<tbody >
 				{items.results.map((item, i) => {
+					let flag = true;
+					const { fields } = item;
+					if(listFilter){
+						flag = listFilter.every(filter => {
+							const keys = filter.key.split('.');
+							const result = keys.reduce((x, y) => x[y], fields);
+							console.log(keys, fields, result, filter.value);
+							return (result !== filter.value);
+						});
+					}
+
+					if (!flag) {
+						return null;
+					}
+
 					return (
 						<TableRow key={item.id}
 							deleteTableItem={this.props.deleteTableItem}
