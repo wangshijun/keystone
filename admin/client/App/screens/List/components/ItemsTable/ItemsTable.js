@@ -108,7 +108,7 @@ const ItemsTable = React.createClass({
 						flag = listFilter.every(filter => {
 							const keys = filter.key.split('.');
 							const result = keys.reduce((x, y) => x[y], fields);
-							console.log(keys, fields, result, filter.value);
+							// console.log(keys, fields, result, filter.value);
 							return (result !== filter.value);
 						});
 					}

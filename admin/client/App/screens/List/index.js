@@ -40,6 +40,7 @@ import {
 	setCurrentPage,
 	selectList,
 	setFilter,
+	clearFilter,
 	loadInitialItems,
 } from './actions';
 
@@ -311,8 +312,22 @@ const ListView = React.createClass({
 			</Container>
 		);
 	},
-	handleCustomAction(customAction){
+	handleCustomAction(customAction) {
+		if (!this.state.customAction) {
+			this.setState({ customAction });
+			return this.props.dispatch(setFilter(customAction.filter.key, customAction.filter.value));
+		}
+
+		if (this.state.customAction && this.state.customAction.name === customAction.name) {
+			this.setState({ customAction: undefined });
+			return this.props.dispatch(clearFilter(customAction.filter.key));
+		}
+
 		this.props.dispatch(setFilter(customAction.filter.key, customAction.filter.value));
+
+		this.setState({ customAction })
+
+
 	},
 
 	// ==============================
