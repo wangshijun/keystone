@@ -254,7 +254,7 @@ const ListView = React.createClass({
 			/>
 		);
 	},
-	filterCustomActions(){
+	filterCustomActions () {
 		const { customActions = [] } = this.props.lists.currentList;
 		return customActions.filter(item => (item.pageName === 'list'));
 	},
@@ -312,22 +312,13 @@ const ListView = React.createClass({
 			</Container>
 		);
 	},
-	handleCustomAction(customAction) {
-		if (!this.state.customAction) {
-			this.setState({ customAction });
-			return this.props.dispatch(setFilter(customAction.filter.key, customAction.filter.value));
-		}
-
-		if (this.state.customAction && this.state.customAction.name === customAction.name) {
-			this.setState({ customAction: undefined });
+	handleCustomAction (customAction) {
+		const filters = this.props.active.filters;
+		if (filters.some(filter => filter.value.value[0] === customAction.filter.value.value[0])) {
 			return this.props.dispatch(clearFilter(customAction.filter.key));
 		}
 
 		this.props.dispatch(setFilter(customAction.filter.key, customAction.filter.value));
-
-		this.setState({ customAction })
-
-
 	},
 
 	// ==============================
@@ -475,7 +466,7 @@ const ListView = React.createClass({
 		);
 	},
 
-	renderCustomActions() {
+	renderCustomActions () {
 		const customActions = this.filterCustomActions();
 
 		return (

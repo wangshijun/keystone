@@ -111,7 +111,7 @@ const ItemsTable = React.createClass({
 								const result = keys.reduce((x, y) => x[y], fields);
 								return (result !== filter.value);
 							} catch (error) {
-								console.error(error);
+								// console.error(error);
 								return false;
 							}
 							// console.log(keys, fields, result, filter.value);
