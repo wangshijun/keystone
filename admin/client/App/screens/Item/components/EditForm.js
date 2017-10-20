@@ -133,7 +133,7 @@ var EditForm = React.createClass({
 	},
 
 	isDone (customActionFormOptions) {
-		return customActionFormOptions.every(options => options.every(item => item.value));
+		return customActionFormOptions.every(options => options.every(item => item.value || item.isDynamic));
 	},
 
 	renderCustomActionsModal () {
@@ -191,7 +191,6 @@ var EditForm = React.createClass({
 		if (this.state.loading) {
 			return;
 		}
-
 		this.props.list.callCustomAction(customAction, value, sendData, (err, data) => {
 			const handleError = e => {
 				smoothScrollTop();
