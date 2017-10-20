@@ -24,25 +24,17 @@ module.exports = function (req, res) {
 		catch (e) { } // eslint-disable-line no-empty
 	}
 	if (typeof filters === 'object') {
-		console.log('1111111111111', filters);
 		assign(where, req.list.addFiltersToQuery(filters));
 	}
 	if (req.query.search) {
-		console.log('2222222222222');
 		assign(where, req.list.addSearchToQuery(req.query.search));
 	}
-	console.log('$$$$$$$$$$$$$*********', where);
 	var query = req.list.model.find(where);
-	// var query = req.list.model.find().populate({
-	// 	path: ,
-	// 	match: { name: where }
-	// });
+
 	if (req.query.populate) {
-		console.log('--------', req.query.populate);
 		query.populate(req.query.populate);
 	}
 	if (req.query.expandRelationshipFields && req.query.expandRelationshipFields !== 'false') {
-		console.log('^^^^^^^^^', req.list.relationshipFields);
 		req.list.relationshipFields.forEach(function (i) {
 			query.populate(i.path);
 		});
