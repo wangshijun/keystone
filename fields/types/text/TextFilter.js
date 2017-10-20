@@ -63,7 +63,6 @@ var TextFilter = React.createClass({
 		const { field, filter } = this.props;
 		const mode = MODE_OPTIONS.filter(i => i.value === filter.mode)[0];
 		const placeholder = field.label + ' ' + mode.label.toLowerCase() + '...';
-
 		return (
 			<div>
 				<FormField>

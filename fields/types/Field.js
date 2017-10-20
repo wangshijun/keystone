@@ -82,7 +82,7 @@ var Base = module.exports.Base = {
 		return <FormNote html={this.props.note} />;
 	},
 	renderField () {
-		const { autoFocus, value, inputProps } = this.props;
+		const { autoFocus, value, inputProps, defaultValue } = this.props;
 		return (
 			<FormInput {...{
 				...inputProps,
@@ -93,6 +93,7 @@ var Base = module.exports.Base = {
 				onFocus: this.onFocus,
 				ref: 'focusTarget',
 				value,
+				defaultValue,
 			}} />
 		);
 	},

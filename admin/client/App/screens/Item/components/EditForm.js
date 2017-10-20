@@ -98,11 +98,20 @@ var EditForm = React.createClass({
 				mode: 'edit',
 				label: item.label,
 				value: item.value,
+				noedit: item.noedit,
 				onChange: event => {
 					uiElements[fieldsIndex][index].value = event.value;
 					this.setState({ customActionFormOptions: uiElements });
 				},
 			};
+
+			if (item.isDynamic) {
+				if (item.option) {
+					props.value = value[item.option];
+				} else if (item.options) {
+					props.defaultValue = this.getValue(item.options, value);
+				}
+			}
 
 			if (item.type === 'select') {
 				props.ops = this.getValue(item.options, value).map(ops => {
@@ -165,7 +174,7 @@ var EditForm = React.createClass({
 					</Button>
 				</div>
 			</Modal.Dialog>
-		)
+		);
 	},
 
 	getValue (str, obj) {
@@ -218,7 +227,7 @@ var EditForm = React.createClass({
 				});
 
 			});
-		})
+		});
 	},
 
 	handleCustomAction (customAction) {
@@ -430,7 +439,7 @@ var EditForm = React.createClass({
 			}
 
 			return item.dependsOn.every(options => options.values.includes(values[options.key]));
-		})
+		});
 	},
 	renderFooterBar () {
 		if (this.props.list.noedit && this.props.list.nodelete) {

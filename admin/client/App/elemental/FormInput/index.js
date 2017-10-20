@@ -26,7 +26,6 @@ class FormInput extends Component {
 			size,
 			...props
 		} = this.props;
-
 		// NOTE return a different component for `noedit`
 		if (noedit) return <InputNoedit {...this.props} />;
 
