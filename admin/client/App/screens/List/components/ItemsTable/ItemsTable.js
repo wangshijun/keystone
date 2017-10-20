@@ -104,12 +104,17 @@ const ItemsTable = React.createClass({
 				{items.results.map((item, i) => {
 					let flag = true;
 					const { fields } = item;
-					if(listFilter){
+					if (listFilter) {
 						flag = listFilter.every(filter => {
 							const keys = filter.key.split('.');
-							const result = keys.reduce((x, y) => x[y], fields);
+							try {
+								const result = keys.reduce((x, y) => x[y], fields);
+								return (result !== filter.value);
+							} catch (error) {
+								console.error(error);
+								return false;
+							}
 							// console.log(keys, fields, result, filter.value);
-							return (result !== filter.value);
 						});
 					}
 
