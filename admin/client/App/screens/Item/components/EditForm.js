@@ -28,7 +28,7 @@ import { deleteItem } from '../actions';
 
 import { upcase } from '../../../../utils/string';
 
-function getNameFromData(data) {
+function getNameFromData (data) {
 	if (typeof data === 'object') {
 		if (typeof data.first === 'string' && typeof data.last === 'string') {
 			return data.first + ' ' + data.last;
@@ -39,7 +39,7 @@ function getNameFromData(data) {
 	return data;
 }
 
-function smoothScrollTop() {
+function smoothScrollTop () {
 	if (document.body.scrollTop || document.documentElement.scrollTop) {
 		window.scrollBy(0, -250);
 		var timeOut = setTimeout(smoothScrollTop, 10);
@@ -91,43 +91,52 @@ var EditForm = React.createClass({
 		return props;
 	},
 
-	renderCustomFormFields(uiElements) {
+	renderCustomFormFields (uiElements) {
 		return uiElements.map((fields, fieldsIndex) => fields.map((item, index) => {
 			const value = this.props.data.fields;
 			const props = {
 				mode: 'edit',
 				label: item.label,
 				value: item.value,
+				noedit: item.noedit,
 				onChange: event => {
 					uiElements[fieldsIndex][index].value = event.value;
 					this.setState({ customActionFormOptions: uiElements });
-				}
+				},
 			};
+
+			if (item.isDynamic) {
+				if (item.option) {
+					props.value = value[item.option];
+				} else if (item.options) {
+					props.defaultValue = this.getValue(item.options, value);
+				}
+			}
 
 			if (item.type === 'select') {
 				props.ops = this.getValue(item.options, value).map(ops => {
 					return {
 						label: ops[item.ops.label],
 						value: ops[item.ops.value],
-					}
+					};
 				});
 			}
 
 			return React.createElement(Fields[item.type], props);
 		}));
 	},
-	hideCustomActionsModal() {
+	hideCustomActionsModal () {
 		this.setState({
 			isShowCustomActionModal: false,
 			customActionFormOptions: [],
-		})
+		});
 	},
 
-	isDone(customActionFormOptions){
-		return customActionFormOptions.every(options => options.every(item => item.value));
+	isDone (customActionFormOptions) {
+		return customActionFormOptions.every(options => options.every(item => item.value || item.isDynamic));
 	},
 
-	renderCustomActionsModal() {
+	renderCustomActionsModal () {
 		const { customActionFormOptions, loading, isShowCustomActionModal, alerts } = this.state;
 		return (
 			<Modal.Dialog
@@ -137,9 +146,9 @@ var EditForm = React.createClass({
 			>
 				<h2 style={{ marginTop: '0.66em' }}>请填写相关信息</h2>
 				{alerts ? <AlertMessages alerts={this.state.alerts} /> : null}
-				<div style={{height: '500px', overflow: 'auto'}}>
+				<div style={{ height: '500px', overflow: 'auto' }}>
 					{this.renderCustomFormFields(customActionFormOptions)}
-					{customActionFormOptions.length > 1 && <div style={{width: '100%', borderBottom: '1px solid #ddd'}}></div>  }
+					{customActionFormOptions.length > 1 && <div style={{ width: '100%', borderBottom: '1px solid #ddd' }}></div> }
 				</div>
 				<div
 					style={{ display: 'flex', padding: '1em', justifyContent: 'space-around'}}
@@ -150,10 +159,10 @@ var EditForm = React.createClass({
 						loading={loading}
 						onClick={() => {
 							const { currentAction, customActionFormOptions } = this.state;
-							if(!this.isDone(customActionFormOptions)){
-								return this.setState({ alerts: { error: { error: '所有信息必须填写全' } } })
+							if (!this.isDone(customActionFormOptions)) {
+								return this.setState({ alerts: { error: { error: '所有信息必须填写全' } } });
 							}
-                            this.setState({ loading: true });
+							this.setState({ loading: true });
 							this.callCustomAction(currentAction, this.props.data, customActionFormOptions);
 						}}
 						data-button="update"
@@ -165,24 +174,23 @@ var EditForm = React.createClass({
 					</Button>
 				</div>
 			</Modal.Dialog>
-		)
+		);
 	},
 
-	getValue(str, obj) {
+	getValue (str, obj) {
 		return str.split('.').reduce((x, y) => {
 			if (Array.isArray(x)) {
 				return x.map(item => item[y]);
 			}
 
-			return x[y]
+			return x[y];
 		}, obj);
 	},
 
-	callCustomAction(customAction, value, sendData){
+	callCustomAction (customAction, value, sendData) {
 		if (this.state.loading) {
 			return;
 		}
-
 		this.props.list.callCustomAction(customAction, value, sendData, (err, data) => {
 			const handleError = e => {
 				smoothScrollTop();
@@ -196,7 +204,7 @@ var EditForm = React.createClass({
 			};
 
 			if (err) {
-				return handleError(err)
+				return handleError(err);
 			}
 
 			this.props.list.loadItem(data._id, { drilldown: true }, (err, value) => {
@@ -218,10 +226,10 @@ var EditForm = React.createClass({
 				});
 
 			});
-		})
+		});
 	},
 
-	handleCustomAction(customAction){
+	handleCustomAction (customAction) {
 		let promptValue = '';
 		const value = this.props.data;
 		if (customAction.needPrompt) {
@@ -417,7 +425,7 @@ var EditForm = React.createClass({
 			}
 		}, this);
 	},
-	filterCustomActions(){
+	filterCustomActions () {
 		const { customActions = [] } = this.props.list;
 		const { values } = this.state;
 		return customActions.filter(item => {
@@ -430,7 +438,7 @@ var EditForm = React.createClass({
 			}
 
 			return item.dependsOn.every(options => options.values.includes(values[options.key]));
-		})
+		});
 	},
 	renderFooterBar () {
 		if (this.props.list.noedit && this.props.list.nodelete) {

@@ -40,6 +40,7 @@ import {
 	setCurrentPage,
 	selectList,
 	setFilter,
+	clearFilter,
 	loadInitialItems,
 } from './actions';
 
@@ -253,7 +254,7 @@ const ListView = React.createClass({
 			/>
 		);
 	},
-	filterCustomActions(){
+	filterCustomActions () {
 		const { customActions = [] } = this.props.lists.currentList;
 		return customActions.filter(item => (item.pageName === 'list'));
 	},
@@ -311,7 +312,12 @@ const ListView = React.createClass({
 			</Container>
 		);
 	},
-	handleCustomAction(customAction){
+	handleCustomAction (customAction) {
+		const filters = this.props.active.filters;
+		if (filters.some(filter => filter.value.value[0] === customAction.filter.value.value[0])) {
+			return this.props.dispatch(clearFilter(customAction.filter.key));
+		}
+
 		this.props.dispatch(setFilter(customAction.filter.key, customAction.filter.value));
 	},
 
@@ -460,7 +466,7 @@ const ListView = React.createClass({
 		);
 	},
 
-	renderCustomActions() {
+	renderCustomActions () {
 		const customActions = this.filterCustomActions();
 
 		return (
