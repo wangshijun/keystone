@@ -317,6 +317,7 @@ List.prototype.deleteItems = function (itemIds, callback) {
 		if (err) return callback(err);
 		// Pass the body as result or error, depending on the statusCode
 		if (resp.statusCode === 200) {
+			if (body.failed) return callback(body.error);
 			callback(null, body);
 		} else {
 			callback(body);

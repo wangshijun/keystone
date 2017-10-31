@@ -137,7 +137,7 @@ export function deleteItem (id, router) {
 			}
 			// TODO Proper error handling
 			if (err) {
-				alert('Error deleting item, please try again!');
+				alert(err);
 			} else {
 				dispatch(loadItems());
 			}
