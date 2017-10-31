@@ -280,6 +280,7 @@ var EditForm = React.createClass({
 	},
 	handleDelete () {
 		const { data } = this.props;
+		this.toggleDeleteDialog();
 		this.props.dispatch(deleteItem(data.id, this.props.router));
 	},
 	handleKeyFocus () {
