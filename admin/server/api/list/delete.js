@@ -44,7 +44,13 @@ module.exports = function (req, res) {
 				deletedIds.push(item.id);
 				next();
 			});
-		}, function () {
+		}, function (err) {
+			if (err) {
+				return res.json({
+					failed: true,
+					error: err.toString(),
+				});
+			}
 			return res.json({
 				success: true,
 				ids: deletedIds,
