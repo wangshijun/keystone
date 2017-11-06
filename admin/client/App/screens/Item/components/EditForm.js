@@ -105,6 +105,10 @@ var EditForm = React.createClass({
 				},
 			};
 
+			if (item.reset) {
+				delete props.value;
+			}
+
 			if (item.isDynamic) {
 				if (item.option) {
 					props.value = value[item.option];
