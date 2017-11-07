@@ -105,10 +105,6 @@ var EditForm = React.createClass({
 				},
 			};
 
-			if (item.reset) {
-				delete props.value;
-			}
-
 			if (item.isDynamic) {
 				if (item.option) {
 					props.value = value[item.option];
@@ -133,7 +129,6 @@ var EditForm = React.createClass({
 		this.setState({
 			isShowCustomActionModal: false,
 			customActionFormOptions: [],
-			alerts: null,
 		});
 	},
 
@@ -247,7 +242,8 @@ var EditForm = React.createClass({
 			const optionsLength = customAction.formCount || this.getValue(customAction.formCountBy, value.fields).length || 1;
 			const customActionFormOptions = [];
 			for (let i = 0; i < optionsLength; i++) {
-				customActionFormOptions.push(customAction.formKeys);
+				const formKeys = JSON.parse(JSON.stringify(customAction.formKeys));
+				customActionFormOptions.push(formKeys);
 			}
 			return this.setState({
 				isShowCustomActionModal: true,
