@@ -242,8 +242,7 @@ var EditForm = React.createClass({
 			const optionsLength = customAction.formCount || this.getValue(customAction.formCountBy, value.fields).length || 1;
 			const customActionFormOptions = [];
 			for (let i = 0; i < optionsLength; i++) {
-				const formKeys = JSON.parse(JSON.stringify(customAction.formKeys));
-				customActionFormOptions.push(formKeys);
+				customActionFormOptions.push(JSON.parse(JSON.stringify(customAction.formKeys)));
 			}
 			return this.setState({
 				isShowCustomActionModal: true,
