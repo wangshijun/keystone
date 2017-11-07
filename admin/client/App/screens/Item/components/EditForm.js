@@ -133,6 +133,7 @@ var EditForm = React.createClass({
 		this.setState({
 			isShowCustomActionModal: false,
 			customActionFormOptions: [],
+			alerts: null,
 		});
 	},
 
