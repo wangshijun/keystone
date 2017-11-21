@@ -5,6 +5,7 @@
 
 const listToArray = require('list-to-array');
 const qs = require('qs');
+const moment = require('moment');
 const xhr = require('xhr');
 const assign = require('object-assign');
 // Filters for truthy elements in an array
@@ -379,5 +380,40 @@ List.prototype.callCustomAction = function (customAction, data, formData, callba
 	});
 };
 
+List.prototype.callBookingCustomField = function (url, { hotelName, cityId }, callback) {
+	const checkin = moment().add(7, 'days').format('YYYY-MM-DD');
+	const checkout = moment().add(8, 'days').format('YYYY-MM-DD');
+	xhr({
+		url: Keystone.adminPath + '/api/' + 'cities' + '/' + cityId + '?basic',
+		responseType: 'json',
+	}, (err, resp, data) => {
+		if (err || !data) {
+			console.error('get city name err', err);
+			return callback(err);
+		}
+		xhr({
+			url: `${url}?hotel=${hotelName}&city=${data.name}&checkin=${checkin}&checkout=${checkout}`,
+			method: 'get',
+		}, (err, resp, body) => {
+			if (err) {
+				return callback(err);
+			}
+			try {
+				if (resp.statusCode !== 200) {
+					return callback(new Error('get booking roomInfo err'));
+				}
+				body = JSON.parse(body);
+				if (body.status === 200) {
+					console.log('callback the body.price', body, body.prices);
+					callback(null, body.prices);
+				} else {
+					callback(new Error('get booking price err'));
+				}
+			} catch (error) {
+				console.log('format body err', error);
+			}
+		});
+	});
+};
 
 module.exports = List;

@@ -6,6 +6,7 @@ import {
 	DRAG_MOVE_ITEM,
 	DRAG_RESET_ITEMS,
 	LOAD_RELATIONSHIP_DATA,
+	BOOKING_URL,
 } from './constants';
 
 import {
@@ -55,7 +56,22 @@ export function loadItemData () {
 			if (err || !itemData) {
 				dispatch(dataLoadingError(err));
 			} else {
-				dispatch(dataLoaded(itemData));
+				if (!list.isAllowAsync) {
+					return dispatch(dataLoaded(itemData));
+				}
+				list.callBookingCustomField(BOOKING_URL, { hotelName: itemData.fields.name, cityId: itemData.fields.city }, (err, result) => {
+					if (err || !result) {
+						alert('获取Booking参考价格失败');
+						console.warn('获取Booking参考价格失败', { err, result });
+					} else {
+						itemData.fields.booking_reference_price = result.filter(x => x.names && x.price).map(item => ({
+							booking_room_name: JSON.stringify(item.names),
+							booking_room_price: item.price,
+						}));
+					}
+					console.log('the itemData fields', itemData.fields);
+					dispatch(dataLoaded(itemData));
+				});
 			}
 		});
 	};
