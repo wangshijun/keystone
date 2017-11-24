@@ -1,3 +1,4 @@
+import assign from 'object-assign';
 import {
 	SELECT_ITEM,
 	LOAD_DATA,
@@ -6,7 +7,7 @@ import {
 	DRAG_MOVE_ITEM,
 	DRAG_RESET_ITEMS,
 	LOAD_RELATIONSHIP_DATA,
-	BOOKING_URL,
+	ASYNC_DATA_LOADING_SUCCESS,
 } from './constants';
 
 import {
@@ -56,22 +57,35 @@ export function loadItemData () {
 			if (err || !itemData) {
 				dispatch(dataLoadingError(err));
 			} else {
-				if (!list.isAllowAsync) {
-					return dispatch(dataLoaded(itemData));
+				dispatch(dataLoaded(itemData));
+				if (list.customAsyncFields) {
+					list.customAsyncFields.forEach(customAsyncField => {
+						const params = customAsyncField.httpReq.params;
+						const formData = {};
+						Object.keys(params).forEach(item => {
+							if (params[item].isRelationship) {
+								formData[item] = params[item];
+								formData[item].relatedData = itemData.fields[params[item].related];
+								return;
+							}
+							if (params[item].isDynamic) {
+								formData[item] = itemData.fields[params[item].related];
+								return;
+							}
+							formData[item] = params[item];
+						});
+						list.callCustomAsyncField(customAsyncField.httpReq, formData, (err, result) => {
+							if (err) {
+								alert(`获取${customAsyncField.heading}失败`);
+								console.warn(`获取${customAsyncField.heading}失败`, { err, result });
+								itemData.fields[customAsyncField.key] = ['数据加载失败'];
+							} else {
+								itemData.fields[customAsyncField.key] = result;
+							}
+							dispatch(asyncDataLoaded(assign({}, itemData)));
+						});
+					});
 				}
-				list.callBookingCustomField(BOOKING_URL, { hotelName: itemData.fields.name, cityId: itemData.fields.city }, (err, result) => {
-					if (err || !result) {
-						alert('获取Booking参考价格失败');
-						console.warn('获取Booking参考价格失败', { err, result });
-					} else {
-						itemData.fields.booking_reference_price = result.filter(x => x.names && x.price).map(item => ({
-							booking_room_name: JSON.stringify(item.names),
-							booking_room_price: item.price,
-						}));
-					}
-					console.log('the itemData fields', itemData.fields);
-					dispatch(dataLoaded(itemData));
-				});
 			}
 		});
 	};
@@ -103,6 +117,13 @@ export function dataLoaded (data) {
 	return {
 		type: DATA_LOADING_SUCCESS,
 		loadingRef: null,
+		data,
+	};
+}
+
+export function asyncDataLoaded (data) {
+	return {
+		type: ASYNC_DATA_LOADING_SUCCESS,
 		data,
 	};
 }

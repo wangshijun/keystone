@@ -69,6 +69,15 @@ var EditForm = React.createClass({
 	componentDidMount () {
 		this.__isMounted = true;
 	},
+	componentWillReceiveProps (nextProps) {
+		if (nextProps.list.customAsyncFields) {
+			this.setState(prevState => {
+				return {
+					values: assign(prevState.values, nextProps.data.fields),
+				};
+			});
+		}
+	},
 	componentWillUnmount () {
 		this.__isMounted = false;
 	},

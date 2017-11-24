@@ -9,6 +9,7 @@ import React from 'react';
 import { Center, Container, Spinner } from '../../elemental';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
+import assign from 'object-assign';
 
 import { listsByKey } from '../../../utils/lists';
 import CreateForm from '../../shared/CreateForm';
@@ -151,6 +152,25 @@ var ItemView = React.createClass({
 				</Center>
 			);
 		}
+		const currentList = assign({}, this.props.currentList);
+		if (currentList.customAsyncFields) {
+			let { customAsyncFields, fields, uiElements } = currentList;
+			customAsyncFields.forEach(customAsyncField => {
+				if (customAsyncField.renderAfter) {
+					if (!this.props.data.fields[customAsyncField.key]) {
+						this.props.data.fields[customAsyncField.key] = customAsyncField.defaultValue;
+					}
+					const uiElementsClone = uiElements.slice();
+					uiElementsClone.forEach((item, idx) => {
+						if (customAsyncField.renderAfter !== (item.field || item.content)) {
+							return;
+						}
+						uiElements.splice(idx + 1, 0, customAsyncField.uiElement);
+						currentList.fields = assign(customAsyncField.formfield, fields);
+					});
+				}
+			});
+		}
 
 		window.data = this.props.data;
 		// When we have the data, render the item view with it
@@ -171,7 +191,7 @@ var ItemView = React.createClass({
 								onCreate={(item) => this.onCreate(item)}
 							/>
 							<EditForm
-								list={this.props.currentList}
+								list={currentList}
 								data={this.props.data}
 								dispatch={this.props.dispatch}
 								loadItemData={loadItemData}

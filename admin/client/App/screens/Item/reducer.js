@@ -10,6 +10,7 @@ import {
 	DRAG_MOVE_ITEM,
 	DRAG_RESET_ITEMS,
 	LOAD_RELATIONSHIP_DATA,
+	ASYNC_DATA_LOADING_SUCCESS,
 } from './constants';
 
 const initialState = {
@@ -39,6 +40,13 @@ function item (state = initialState, action) {
 				loading: true,
 			});
 		case DATA_LOADING_SUCCESS:
+			return assign({}, state, {
+				data: action.data,
+				loading: false,
+				ready: true,
+				error: null,
+			});
+		case ASYNC_DATA_LOADING_SUCCESS:
 			return assign({}, state, {
 				data: action.data,
 				loading: false,

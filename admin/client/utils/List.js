@@ -380,39 +380,23 @@ List.prototype.callCustomAction = function (customAction, data, formData, callba
 	});
 };
 
-List.prototype.callBookingCustomField = function (url, { hotelName, cityId }, callback) {
-	const checkin = moment().add(7, 'days').format('YYYY-MM-DD');
-	const checkout = moment().add(8, 'days').format('YYYY-MM-DD');
+List.prototype.callCustomAsyncField = function (httpReq, formData, callback) {
+	const url = Keystone.adminPath + '/api' + httpReq.url;
 	xhr({
-		url: Keystone.adminPath + '/api/' + 'cities' + '/' + cityId + '?basic',
-		responseType: 'json',
-	}, (err, resp, data) => {
-		if (err || !data) {
-			console.error('get city name err', err);
-			return callback(err);
+		url,
+		method: httpReq.method,
+		body: formData,
+		json: true,
+	}, (err, resp, body) => {
+		if (err) {
+			callback(err, null);
+			return;
 		}
-		xhr({
-			url: `${url}?hotel=${hotelName}&city=${data.name}&checkin=${checkin}&checkout=${checkout}`,
-			method: 'get',
-		}, (err, resp, body) => {
-			if (err) {
-				return callback(err);
-			}
-			try {
-				if (resp.statusCode !== 200) {
-					return callback(new Error('get booking roomInfo err'));
-				}
-				body = JSON.parse(body);
-				if (body.status === 200) {
-					console.log('callback the body.price', body, body.prices);
-					callback(null, body.prices);
-				} else {
-					callback(new Error('get booking price err'));
-				}
-			} catch (error) {
-				console.log('format body err', error);
-			}
-		});
+		if (body.status === 200) {
+			callback(null, body.data);
+			return;
+		}
+		callback(new Error('数据拉取错误'), null);
 	});
 };
 
