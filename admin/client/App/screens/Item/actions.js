@@ -67,8 +67,8 @@ export function loadItemData () {
 						});
 						list.callCustomAsyncField(customAsyncField.httpReq, formData, (err, result) => {
 							if (err) {
-								alert(`获取${customAsyncField.heading}失败`);
-								console.warn(`获取${customAsyncField.heading}失败`, { err, result });
+								alert(`获取${customAsyncField[customAsyncField.key].label}失败`);
+								console.warn(`获取${customAsyncField[customAsyncField.key].label}失败`, { err, result });
 								itemData.fields[customAsyncField.key] = ['数据加载失败'];
 							} else {
 								itemData.fields[customAsyncField.key] = result;

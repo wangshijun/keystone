@@ -74,6 +74,36 @@ var ItemView = React.createClass({
 			createIsOpen: visible,
 		});
 	},
+	// add customAsyncFields
+	HandleCustomAsyncFields (currentList) {
+		if (currentList.customAsyncFields) {
+			let { customAsyncFields, uiElements } = currentList;
+			customAsyncFields.forEach(customAsyncField => {
+				const uiElement = {
+					type: 'field',
+					field: customAsyncField.key,
+				};
+				if (!this.props.data.fields[customAsyncField.key]) {
+					this.props.data.fields[customAsyncField.key] = customAsyncField.defaultValue;
+				}
+				const uiElementsClone = uiElements.slice();
+				uiElementsClone.forEach((item, index) => {
+					if (currentList.fields[customAsyncField.key]) { // 得保证 customAsyncField.key 存在
+						return;
+					}
+					if (customAsyncField.renderAfter && customAsyncField.renderAfter === (item.field || item.content)) {
+						currentList.fields[customAsyncField.key] = customAsyncField[customAsyncField.key];
+						uiElements.splice(index + 1, 0, uiElement);
+						return;
+					}
+					if (index === uiElementsClone.length - 1) { // 当没有renderAfter或没有匹配上时，customAsyncField[customAsyncField.key] 放到数组最后
+						currentList.fields[customAsyncField.key] = customAsyncField[customAsyncField.key];
+						uiElements.push(uiElement);
+					}
+				});
+			});
+		}
+	},
 	// Render this items relationships
 	renderRelationships () {
 		const { relationships } = this.props.currentList;
@@ -153,30 +183,7 @@ var ItemView = React.createClass({
 			);
 		}
 		const currentList = this.props.currentList;
-		if (currentList.customAsyncFields) {
-			let { customAsyncFields, fields, uiElements } = currentList;
-			customAsyncFields.forEach(customAsyncField => {
-				if (!this.props.data.fields[customAsyncField.key]) {
-					this.props.data.fields[customAsyncField.key] = customAsyncField.defaultValue;
-				}
-				const uiElementsClone = uiElements.slice();
-				console.log('currentList set times');
-				uiElementsClone.forEach((item, index) => {
-					if (currentList.fields[customAsyncField.key]) { // 得保证 customAsyncField key存在，且与 formfield 的 Key 相同
-						return;
-					}
-					if (customAsyncField.renderAfter && customAsyncField.renderAfter === (item.field || item.content)) {
-						currentList.fields = assign(customAsyncField.formfield, fields);
-						uiElements.splice(index + 1, 0, customAsyncField.uiElement);
-						return;
-					}
-					if (index === uiElementsClone.length - 1) { // 当没有renderAfter或没有匹配上时，formfield放到数组最后
-						currentList.fields = assign(customAsyncField.formfield, fields);
-						uiElements.push(customAsyncField.uiElement);
-					}
-				});
-			});
-		}
+		this.HandleCustomAsyncFields(currentList);
 
 		window.data = this.props.data;
 		// When we have the data, render the item view with it
