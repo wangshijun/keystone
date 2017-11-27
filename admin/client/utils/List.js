@@ -5,7 +5,6 @@
 
 const listToArray = require('list-to-array');
 const qs = require('qs');
-const moment = require('moment');
 const xhr = require('xhr');
 const assign = require('object-assign');
 // Filters for truthy elements in an array

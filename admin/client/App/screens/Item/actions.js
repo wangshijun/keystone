@@ -7,7 +7,6 @@ import {
 	DRAG_MOVE_ITEM,
 	DRAG_RESET_ITEMS,
 	LOAD_RELATIONSHIP_DATA,
-	ASYNC_DATA_LOADING_SUCCESS,
 } from './constants';
 
 import {
@@ -62,17 +61,9 @@ export function loadItemData () {
 					list.customAsyncFields.forEach(customAsyncField => {
 						const params = customAsyncField.httpReq.params;
 						const formData = {};
+						console.log('after first dispach itemdata', itemData);
 						Object.keys(params).forEach(item => {
-							if (params[item].isRelationship) {
-								formData[item] = params[item];
-								formData[item].relatedData = itemData.fields[params[item].related];
-								return;
-							}
-							if (params[item].isDynamic) {
-								formData[item] = itemData.fields[params[item].related];
-								return;
-							}
-							formData[item] = params[item];
+							formData[item] = itemData.fields[params[item]];
 						});
 						list.callCustomAsyncField(customAsyncField.httpReq, formData, (err, result) => {
 							if (err) {
@@ -82,7 +73,7 @@ export function loadItemData () {
 							} else {
 								itemData.fields[customAsyncField.key] = result;
 							}
-							dispatch(asyncDataLoaded(assign({}, itemData)));
+							dispatch(dataLoaded(assign({}, itemData)));
 						});
 					});
 				}
@@ -117,13 +108,6 @@ export function dataLoaded (data) {
 	return {
 		type: DATA_LOADING_SUCCESS,
 		loadingRef: null,
-		data,
-	};
-}
-
-export function asyncDataLoaded (data) {
-	return {
-		type: ASYNC_DATA_LOADING_SUCCESS,
 		data,
 	};
 }
