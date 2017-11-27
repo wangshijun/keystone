@@ -160,13 +160,20 @@ var ItemView = React.createClass({
 					this.props.data.fields[customAsyncField.key] = customAsyncField.defaultValue;
 				}
 				const uiElementsClone = uiElements.slice();
+				console.log('currentList set times');
 				uiElementsClone.forEach((item, index) => {
-					currentList.fields = assign(customAsyncField.formfield, fields);
-					if (!customAsyncField.renderAfter || customAsyncField.renderAfter !== (item.field || item.content)) { // 没有renderAfter或字段的值没有找到匹配的，formField就放到数组最后一个
-						uiElements.push(customAsyncField.uiElement);
+					if (currentList.fields[customAsyncField.key]) { // 得保证 customAsyncField key存在，且与 formfield 的 Key 相同
 						return;
 					}
-					uiElements.splice(index + 1, 0, customAsyncField.uiElement);
+					if (customAsyncField.renderAfter && customAsyncField.renderAfter === (item.field || item.content)) {
+						currentList.fields = assign(customAsyncField.formfield, fields);
+						uiElements.splice(index + 1, 0, customAsyncField.uiElement);
+						return;
+					}
+					if (index === uiElementsClone.length - 1) { // 当没有renderAfter或没有匹配上时，formfield放到数组最后
+						currentList.fields = assign(customAsyncField.formfield, fields);
+						uiElements.push(customAsyncField.uiElement);
+					}
 				});
 			});
 		}
