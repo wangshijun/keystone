@@ -152,23 +152,22 @@ var ItemView = React.createClass({
 				</Center>
 			);
 		}
-		const currentList = assign({}, this.props.currentList);
+		const currentList = this.props.currentList;
 		if (currentList.customAsyncFields) {
 			let { customAsyncFields, fields, uiElements } = currentList;
 			customAsyncFields.forEach(customAsyncField => {
-				if (customAsyncField.renderAfter) {
-					if (!this.props.data.fields[customAsyncField.key]) {
-						this.props.data.fields[customAsyncField.key] = customAsyncField.defaultValue;
-					}
-					const uiElementsClone = uiElements.slice();
-					uiElementsClone.forEach((item, idx) => {
-						if (customAsyncField.renderAfter !== (item.field || item.content)) {
-							return;
-						}
-						uiElements.splice(idx + 1, 0, customAsyncField.uiElement);
-						currentList.fields = assign(customAsyncField.formfield, fields);
-					});
+				if (!this.props.data.fields[customAsyncField.key]) {
+					this.props.data.fields[customAsyncField.key] = customAsyncField.defaultValue;
 				}
+				const uiElementsClone = uiElements.slice();
+				uiElementsClone.forEach((item, index) => {
+					currentList.fields = assign(customAsyncField.formfield, fields);
+					if (!customAsyncField.renderAfter || customAsyncField.renderAfter !== (item.field || item.content)) { // 没有renderAfter或字段的值没有找到匹配的，formField就放到数组最后一个
+						uiElements.push(customAsyncField.uiElement);
+						return;
+					}
+					uiElements.splice(index + 1, 0, customAsyncField.uiElement);
+				});
 			});
 		}
 
