@@ -379,5 +379,24 @@ List.prototype.callCustomAction = function (customAction, data, formData, callba
 	});
 };
 
+List.prototype.callCustomAsyncField = function (httpReq, formData, callback) {
+	const url = Keystone.adminPath + '/api' + httpReq.url;
+	xhr({
+		url,
+		method: httpReq.method,
+		body: formData,
+		json: true,
+	}, (err, resp, body) => {
+		if (err) {
+			callback(err, null);
+			return;
+		}
+		if (body.status === 200) {
+			callback(null, body.data);
+			return;
+		}
+		callback(new Error('数据拉取错误'), null);
+	});
+};
 
 module.exports = List;

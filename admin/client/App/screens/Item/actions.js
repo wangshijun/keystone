@@ -1,3 +1,4 @@
+import assign from 'object-assign';
 import {
 	SELECT_ITEM,
 	LOAD_DATA,
@@ -56,6 +57,26 @@ export function loadItemData () {
 				dispatch(dataLoadingError(err));
 			} else {
 				dispatch(dataLoaded(itemData));
+				if (list.customAsyncFields) {
+					list.customAsyncFields.forEach(customAsyncField => {
+						const params = customAsyncField.httpReq.params;
+						const formData = {};
+						console.log('after first dispach itemdata', itemData);
+						Object.keys(params).forEach(item => {
+							formData[item] = itemData.fields[params[item]];
+						});
+						list.callCustomAsyncField(customAsyncField.httpReq, formData, (err, result) => {
+							if (err) {
+								alert(`获取${customAsyncField[customAsyncField.key].label}失败`);
+								console.warn(`获取${customAsyncField[customAsyncField.key].label}失败`, { err, result });
+								itemData.fields[customAsyncField.key] = ['数据加载失败'];
+							} else {
+								itemData.fields[customAsyncField.key] = result;
+							}
+							dispatch(dataLoaded(assign({}, itemData)));
+						});
+					});
+				}
 			}
 		});
 	};

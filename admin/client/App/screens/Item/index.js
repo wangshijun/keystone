@@ -9,6 +9,7 @@ import React from 'react';
 import { Center, Container, Spinner } from '../../elemental';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
+import assign from 'object-assign';
 
 import { listsByKey } from '../../../utils/lists';
 import CreateForm from '../../shared/CreateForm';
@@ -72,6 +73,36 @@ var ItemView = React.createClass({
 		this.setState({
 			createIsOpen: visible,
 		});
+	},
+	// add customAsyncFields
+	HandleCustomAsyncFields (currentList) {
+		if (currentList.customAsyncFields) {
+			let { customAsyncFields, uiElements } = currentList;
+			customAsyncFields.forEach(customAsyncField => {
+				const uiElement = {
+					type: 'field',
+					field: customAsyncField.key,
+				};
+				if (!this.props.data.fields[customAsyncField.key]) {
+					this.props.data.fields[customAsyncField.key] = customAsyncField.defaultValue;
+				}
+				const uiElementsClone = uiElements.slice();
+				uiElementsClone.forEach((item, index) => {
+					if (currentList.fields[customAsyncField.key]) { // 得保证 customAsyncField.key 存在
+						return;
+					}
+					if (customAsyncField.renderAfter && customAsyncField.renderAfter === (item.field || item.content)) {
+						currentList.fields[customAsyncField.key] = customAsyncField[customAsyncField.key];
+						uiElements.splice(index + 1, 0, uiElement);
+						return;
+					}
+					if (index === uiElementsClone.length - 1) { // 当没有renderAfter或没有匹配上时，customAsyncField[customAsyncField.key] 放到数组最后
+						currentList.fields[customAsyncField.key] = customAsyncField[customAsyncField.key];
+						uiElements.push(uiElement);
+					}
+				});
+			});
+		}
 	},
 	// Render this items relationships
 	renderRelationships () {
@@ -151,6 +182,8 @@ var ItemView = React.createClass({
 				</Center>
 			);
 		}
+		const currentList = this.props.currentList;
+		this.HandleCustomAsyncFields(currentList);
 
 		window.data = this.props.data;
 		// When we have the data, render the item view with it
@@ -171,7 +204,7 @@ var ItemView = React.createClass({
 								onCreate={(item) => this.onCreate(item)}
 							/>
 							<EditForm
-								list={this.props.currentList}
+								list={currentList}
 								data={this.props.data}
 								dispatch={this.props.dispatch}
 								loadItemData={loadItemData}
