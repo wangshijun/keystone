@@ -107,7 +107,7 @@ module.exports = Field.create({
 		}, this);
 	},
 	renderItems () {
-		const { value = [], path, grid, nodeladd } = this.props;
+		const { value = [], path, grid, noadd, nodelete } = this.props;
 		const onAdd = this.addItem;
 		const gridSize = grid ? getGridSize(grid) : undefined;
 		const style = grid ? { display: 'flex', flexDirection: 'row', flexWrap: 'wrap' } : {};
@@ -134,7 +134,7 @@ module.exports = Field.create({
 					{value.map((value, index) => {
 						const { id, _isNew } = value;
 						const name = !_isNew && `${path}[${index}][id]`;
-						const onRemove = nodeladd ? null : e => this.removeItem(index);
+						const onRemove = nodelete ? null : e => this.removeItem(index);
 
 						return (
 							<ItemDom key={id} {...{ id, name, onRemove, itemDomstyle }}>
@@ -144,7 +144,7 @@ module.exports = Field.create({
 					})}
 				</div>
 				{
-					!nodeladd
+					!noadd
 					&& <GlyphButton color="success" glyph="plus" size="small" position="left" onClick={onAdd}>
 						Add
 					</GlyphButton>
