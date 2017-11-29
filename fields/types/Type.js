@@ -26,6 +26,7 @@ var DEFAULT_OPTION_KEYS = [
 	'editBy',
 	'nocol',
 	'nosort',
+	'nodeladd',
 	'indent',
 	'hidden',
 	'collapse',
