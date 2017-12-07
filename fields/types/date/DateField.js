@@ -82,9 +82,11 @@ module.exports = Field.create({
 						value={value}
 					/>
 				</Section>
+				{!this.props.hideShowDateBtn &&
 				<Section>
 					<Button onClick={this.setToday}>Today</Button>
 				</Section>
+				}
 			</Group>
 		);
 	},
