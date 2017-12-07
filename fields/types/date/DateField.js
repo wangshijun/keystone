@@ -82,7 +82,7 @@ module.exports = Field.create({
 						value={value}
 					/>
 				</Section>
-				{!this.props.hideShowDateBtn &&
+				{!this.props.hideChooseDateBtn &&
 				<Section>
 					<Button onClick={this.setToday}>Today</Button>
 				</Section>

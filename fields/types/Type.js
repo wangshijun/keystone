@@ -16,7 +16,7 @@ var DEFAULT_OPTION_KEYS = [
 	'paths',
 	'type',
 	'grid',
-	'hideShowDateBtn',
+	'hideChooseDateBtn',
 	'label',
 	'note',
 	'size',
@@ -238,7 +238,7 @@ definePrototypeGetters(Field, {
 	collapse: function () { return this.options.collapse || false; },
 	hidden: function () { return this.options.hidden || false; },
 	dependsOn: function () { return this.options.dependsOn || false; },
-	hideShowDateBtn: function () { return this.options.hideShowDateBtn || false; },
+	hideChooseDateBtn: function () { return this.options.hideChooseDateBtn || false; },
 });
 
 /**
