@@ -106,8 +106,22 @@ module.exports = Field.create({
 			return React.createElement(Fields[field.type], props);
 		}, this);
 	},
+	handleListLengthChanged (value, values) {
+		if (typeof value === 'boolean') {
+			return value;
+		}
+		if (typeof value === 'object' && value.dependsOn) {
+			return Object.keys(value.dependsOn).every(item => {
+				if (Array.isArray(value.dependsOn[item])) {
+					return value.dependsOn[item].some(x => x === values[item]);
+				}
+				return value.dependsOn[item] === values[item];
+			});
+		}
+		return false;
+	},
 	renderItems () {
-		const { value = [], path, grid, noadd, nodelete } = this.props;
+		const { value = [], path, grid, noAdd, noDelete, values } = this.props;
 		const onAdd = this.addItem;
 		const gridSize = grid ? getGridSize(grid) : undefined;
 		const style = grid ? { display: 'flex', flexDirection: 'row', flexWrap: 'wrap' } : {};
@@ -127,6 +141,8 @@ module.exports = Field.create({
 				borderTop: '2px solid #eee',
 				paddingTop: 15,
 			};
+		const noAddFlag = this.handleListLengthChanged(noAdd, values);
+		const noDeleteFlag = this.handleListLengthChanged(noDelete, values);
 		return (
 			<div>
 				<div style={style}>
@@ -134,7 +150,7 @@ module.exports = Field.create({
 					{value.map((value, index) => {
 						const { id, _isNew } = value;
 						const name = !_isNew && `${path}[${index}][id]`;
-						const onRemove = nodelete ? null : e => this.removeItem(index);
+						const onRemove = noDeleteFlag ? null : e => this.removeItem(index);
 
 						return (
 							<ItemDom key={id} {...{ id, name, onRemove, itemDomstyle }}>
@@ -144,7 +160,7 @@ module.exports = Field.create({
 					})}
 				</div>
 				{
-					!noadd
+					!noAddFlag
 					&& <GlyphButton color="success" glyph="plus" size="small" position="left" onClick={onAdd}>
 						Add
 					</GlyphButton>
