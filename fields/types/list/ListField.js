@@ -111,11 +111,11 @@ module.exports = Field.create({
 			return value;
 		}
 		if (typeof value === 'object' && value.dependsOn) {
-			return Object.keys(value.dependsOn).every(item => {
-				if (Array.isArray(value.dependsOn[item])) {
-					return value.dependsOn[item].some(x => x === values[item]);
+			return Object.keys(value.dependsOn).every(key => {
+				if (Array.isArray(value.dependsOn[key])) {
+					return value.dependsOn[key].some(x => x === values[key]);
 				}
-				return value.dependsOn[item] === values[item];
+				return value.dependsOn[key] === values[key];
 			});
 		}
 		return false;
