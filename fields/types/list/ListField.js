@@ -121,7 +121,7 @@ module.exports = Field.create({
 		return false;
 	},
 	renderItems () {
-		const { value = [], path, grid, noAdd, noDelete, values } = this.props;
+		const { value = [], path, grid, noadd, nodelete, values } = this.props;
 		const onAdd = this.addItem;
 		const gridSize = grid ? getGridSize(grid) : undefined;
 		const style = grid ? { display: 'flex', flexDirection: 'row', flexWrap: 'wrap' } : {};
@@ -141,8 +141,8 @@ module.exports = Field.create({
 				borderTop: '2px solid #eee',
 				paddingTop: 15,
 			};
-		const noAddFlag = this.handleListLengthChanged(noAdd, values);
-		const noDeleteFlag = this.handleListLengthChanged(noDelete, values);
+		const noAddFlag = this.handleListLengthChanged(noadd, values);
+		const noDeleteFlag = this.handleListLengthChanged(nodelete, values);
 		return (
 			<div>
 				<div style={style}>
