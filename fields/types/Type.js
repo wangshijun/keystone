@@ -115,6 +115,9 @@ Field.prototype.getOptions = function () {
 			optionKeys = optionKeys.concat(this._properties);
 		}
 		optionKeys.forEach(function (key) {
+			if (key === 'noadd') {
+				console.log('================', this[key]);
+			}
 			if (this[key]) {
 				this.__options[key] = this[key];
 			} else if (this.options[key]) {
