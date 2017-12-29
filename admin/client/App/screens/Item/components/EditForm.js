@@ -196,51 +196,84 @@ var EditForm = React.createClass({
 		}, obj);
 	},
 
+	handleError (e) {
+		smoothScrollTop();
+		this.hideCustomActionsModal();
+		this.setState({
+			alerts: {
+				error: { error: e.message },
+			},
+			loading: false,
+		});
+	},
+
+	loadItem(id, tip) {
+		this.props.list.loadItem(id, { drilldown: true }, (err, value) => {
+			if (err) {
+				return this.handleError(err);
+			}
+
+			smoothScrollTop();
+			this.hideCustomActionsModal();
+			this.setState({
+				alerts: { success: { success: tip } },
+				lastValues: this.state.values,
+				values: value.fields,
+				loading: false,
+			});
+
+		});
+	},
+
 	callCustomAction (customAction, value, sendData) {
 		if (this.state.loading) {
 			return;
 		}
 		this.props.list.callCustomAction(customAction, value, sendData, (err, data) => {
-			const handleError = e => {
-				smoothScrollTop();
-				this.hideCustomActionsModal();
-				this.setState({
-					alerts: {
-						error: { error: e.message },
-					},
-					loading: false,
-				});
-			};
-
 			if (err) {
-				return handleError(err);
+				return this.handleError(err);
 			}
 
-			this.props.list.loadItem(data._id, { drilldown: true }, (err, value) => {
-				if (err) {
-					return handleError(err);
-				}
-
-				smoothScrollTop();
-				this.hideCustomActionsModal();
-				this.setState({
-					alerts: {
-						success: {
-							success: 'Your changes have been saved successfully',
-						},
-					},
-					lastValues: this.state.values,
-					values: value.fields,
-					loading: false,
-				});
-
-			});
+			this.loadItem(data._id, '执行成功');
 		});
+	},
+
+	handelHotelOrder (action) {
+		this.setState({
+			loading: true,
+		});
+
+    const handleXhr = (err, data) => {
+      if (err) {
+	      const flag = confirm(`酒店确认失败 \n 失败原因: ${err} \n 是否需要强制确认, 点击确定进行强制确认（强制确认会忽略价格差价直接下定), 不需要强制确认让用户发起退款`);
+	      if(flag){
+		      return this.props.list.callCustomAction(action, assign({enforce: true }, this.props.data), handleXhr)
+	      }
+
+	      return this.setState({
+		      loading: false,
+	      });
+      }
+
+	    this.loadItem(data._id, '酒店确认成功');
+    };
+
+		this.props.list.callCustomAction(action, this.props.data, handleXhr);
+	},
+
+	doCustomActionSelf (action) {
+		if (action.actionType === 'hotel.order') {
+			return this.handelHotelOrder(action);
+		}
 	},
 
 	handleCustomAction (customAction) {
 		let promptValue = '';
 		const value = this.props.data;
+		if(customAction.doActionSelf){
+			return this.doCustomActionSelf(customAction);
+		}
+
 		if (customAction.needPrompt) {
 			promptValue = window.prompt(customAction.promptText);
 			if (!promptValue) {

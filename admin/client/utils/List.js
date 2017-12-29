@@ -350,6 +350,11 @@ List.prototype.reorderItems = function (item, oldSortOrder, newSortOrder, pageOp
 
 List.prototype.callCustomAction = function (customAction, data, formData, callback) {
 	const url = Keystone.adminPath + '/api' + customAction.url + (customAction.urlKey ? '/' + data[customAction.urlKey] : '');
+	if (typeof formData === 'function') {
+		callback = formData;
+		formData = '';
+	}
+
 	if (customAction.dataKey) {
 		data[customAction.dataKey] = formData;
 	}
