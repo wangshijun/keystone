@@ -239,9 +239,9 @@ var EditForm = React.createClass({
 	},
 
 	handelHotelOrder (action) {
-    this.setState({
-      loading: true,
-    });
+		this.setState({
+			loading: true,
+		});
 
     const handleXhr = (err, data) => {
       if (err) {
