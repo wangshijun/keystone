@@ -245,9 +245,9 @@ var EditForm = React.createClass({
 
     const handleXhr = (err, data) => {
       if (err) {
-	      const flag = confirm(`酒店确认失败 \n 失败原因: ${data.errmsg} \n 是否需要强制确认, 点击确定进行强制确认（强制确认会忽略价格差价直接下定), 不需要强制确认让用户发起退款`);
+	      const flag = confirm(`酒店确认失败 \n 失败原因: ${err} \n 是否需要强制确认, 点击确定进行强制确认（强制确认会忽略价格差价直接下定), 不需要强制确认让用户发起退款`);
 	      if(flag){
-		      this.props.list.callCustomAction(action, assign({enforce: true }, this.props.data), handleXhr)
+		      return this.props.list.callCustomAction(action, assign({enforce: true }, this.props.data), handleXhr)
 	      }
 
 	      return this.setState({
