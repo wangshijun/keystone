@@ -88,6 +88,7 @@ module.exports = Field.create({
 			if (typeof Fields[field.type] !== 'function') {
 				return React.createElement(InvalidFieldType, { type: field.type, path: field.path, key: field.path });
 			}
+
 			const props = assign({}, field);
 			props.value = value[field.path];
 			props.values = value;
@@ -96,6 +97,11 @@ module.exports = Field.create({
 			props.inputNamePrefix = `${this.props.path}[${index}]`;
 			props.key = field.path;
 			props.grid = grid;
+
+			if (props.hidden) {
+				return true;
+			}
+
 			// TODO ?
 			// if (props.dependsOn) {
 			// 	props.currentDependencies = {};
