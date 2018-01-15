@@ -79,6 +79,9 @@ var ItemView = React.createClass({
 		if (currentList.customAsyncFields) {
 			let { customAsyncFields, uiElements } = currentList;
 			customAsyncFields.forEach(customAsyncField => {
+				if (customAsyncField.enable === false) {
+					return;
+				}
 				const uiElement = {
 					type: 'field',
 					field: customAsyncField.key,
