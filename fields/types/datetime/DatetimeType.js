@@ -54,7 +54,8 @@ datetime.prototype.getInputFromData = function (data) {
 		return combined;
 	}
 
-	return this.getValueFromData(data);
+	return null;
+	// return this.getValueFromData(data);
 };
 
 
