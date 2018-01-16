@@ -59,6 +59,9 @@ export function loadItemData () {
 				dispatch(dataLoaded(itemData));
 				if (list.customAsyncFields) {
 					list.customAsyncFields.forEach(customAsyncField => {
+						if (customAsyncField.enable === false) {
+							return;
+						}
 						const params = customAsyncField.httpReq.params;
 						const formData = {};
 						console.log('after first dispach itemdata', itemData);
