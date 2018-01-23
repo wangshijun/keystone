@@ -123,12 +123,17 @@ var EditForm = React.createClass({
 			}
 
 			if (item.type === 'select') {
-				props.ops = this.getValue(item.options, value).map(ops => {
+				const temp = this.getValue(item.options, value).map(ops => {
 					return {
 						label: ops[item.ops.label],
 						value: ops[item.ops.value],
 					};
 				});
+				if (temp.length) {
+					props.ops = temp;
+				} else {
+					item.type = 'text';
+				}
 			}
 
 			return React.createElement(Fields[item.type], props);
