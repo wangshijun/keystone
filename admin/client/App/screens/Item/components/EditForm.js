@@ -248,20 +248,20 @@ var EditForm = React.createClass({
 			loading: true,
 		});
 
-    const handleXhr = (err, data) => {
-      if (err) {
-	      const flag = confirm(`酒店确认失败 \n 失败原因: ${err} \n 是否需要强制确认, 点击确定进行强制确认（强制确认会忽略价格差价直接下定), 不需要强制确认让用户发起退款`);
-	      if(flag){
-		      return this.props.list.callCustomAction(action, assign({enforce: true }, this.props.data), handleXhr)
-	      }
+		const handleXhr = (err, data) => {
+			if (err) {
+				const flag = confirm(`酒店确认失败 \n 失败原因: ${err} \n 是否需要强制确认, 点击确定进行强制确认（强制确认会忽略价格差价直接下定), 不需要强制确认让用户发起退款`);
+				if (flag) {
+					return this.props.list.callCustomAction(action, assign({ enforce: true }, this.props.data), handleXhr);
+				}
 
-	      return this.setState({
-		      loading: false,
-	      });
-      }
+				return this.setState({
+					loading: false,
+				});
+			}
 
-	    this.loadItem(data._id, '酒店确认成功');
-    };
+			this.loadItem(data._id, '酒店确认成功');
+		};
 
 		this.props.list.callCustomAction(action, this.props.data, handleXhr);
 	},
@@ -275,7 +275,7 @@ var EditForm = React.createClass({
 	handleCustomAction (customAction) {
 		let promptValue = '';
 		const value = this.props.data;
-		if(customAction.doActionSelf){
+		if (customAction.doActionSelf) {
 			return this.doCustomActionSelf(customAction);
 		}
 
@@ -619,7 +619,7 @@ var EditForm = React.createClass({
 			<form ref="editForm" className="EditForm-container">
 				{(this.state.alerts) ? <AlertMessages alerts={this.state.alerts} /> : null}
 				<Grid.Row>
-					<Grid.Col large="three-quarters">
+					<Grid.Col large="one-whole">
 						<Form layout="horizontal" component="div">
 							{this.renderNameField()}
 							{this.renderKeyOrId()}
@@ -627,7 +627,6 @@ var EditForm = React.createClass({
 							{this.renderTrackingMeta()}
 						</Form>
 					</Grid.Col>
-					<Grid.Col large="one-quarter"><span /></Grid.Col>
 				</Grid.Row>
 				{this.renderFooterBar()}
 				<ConfirmationDialog

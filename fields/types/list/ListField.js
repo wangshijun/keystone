@@ -38,7 +38,7 @@ const getGridSize = (grid) => {
 		return grid;
 	}
 
-	return '18%';
+	return '22.5%';
 };
 
 module.exports = Field.create({
@@ -138,7 +138,7 @@ module.exports = Field.create({
 			flexDirection: 'column',
 			alignItems: 'flex-start',
 			width: gridSize,
-			maxWidth: 224,
+			maxWidth: 600,
 			margin: 10,
 			marginLeft: 0,
 			marginBottom: 15,
