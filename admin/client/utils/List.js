@@ -100,7 +100,9 @@ List.prototype.createItem = function (formData, callback) {
 		body: formData,
 	}, (err, resp, data) => {
 		if (err) callback(err);
-		if (resp.statusCode === 200) {
+		if (data && data.status && data.status > 200 && data.error && data.detail) {
+			callback(data);
+		} else if (resp.statusCode === 200) {
 			callback(null, data);
 		} else {
 			// NOTE: xhr callback will be called with an Error if
@@ -239,7 +241,9 @@ List.prototype.loadItem = function (itemId, options, callback) {
 	}, (err, resp, data) => {
 		if (err) return callback(err);
 		// Pass the data as result or error, depending on the statusCode
-		if (resp.statusCode === 200) {
+		if (data && data.status && data.status > 200 && data.error && data.detail) {
+			callback(data);
+		} else if (resp.statusCode === 200) {
 			callback(null, data);
 		} else {
 			callback(data);
@@ -262,7 +266,9 @@ List.prototype.loadItems = function (options, callback) {
 	}, (err, resp, data) => {
 		if (err) callback(err);
 		// Pass the data as result or error, depending on the statusCode
-		if (resp.statusCode === 200) {
+		if (data && data.status && data.status > 200 && data.error && data.detail) {
+			callback(data);
+		} else if (resp.statusCode === 200) {
 			callback(null, data);
 		} else {
 			callback(data);
@@ -317,14 +323,16 @@ List.prototype.deleteItems = function (itemIds, callback) {
 		json: {
 			ids: itemIds,
 		},
-	}, (err, resp, body) => {
+	}, (err, resp, data) => {
 		if (err) return callback(err);
 		// Pass the body as result or error, depending on the statusCode
-		if (resp.statusCode === 200) {
-			if (body.failed) return callback(body.error);
-			callback(null, body);
+		if (data && data.status && data.status > 200 && data.error && data.detail) {
+			callback(data);
+		} else if (resp.statusCode === 200) {
+			if (data.failed) return callback(data.error);
+			callback(null, data);
 		} else {
-			callback(body);
+			callback(data);
 		}
 	});
 };
@@ -344,7 +352,9 @@ List.prototype.reorderItems = function (item, oldSortOrder, newSortOrder, pageOp
 			return callback(e);
 		}
 		// Pass the body as result or error, depending on the statusCode
-		if (resp.statusCode === 200) {
+		if (body && body.status && body.status > 200 && body.error && body.detail) {
+			callback(body);
+		} else if (resp.statusCode === 200) {
 			callback(null, body);
 		} else {
 			callback(body);
