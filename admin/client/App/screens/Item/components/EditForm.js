@@ -212,7 +212,7 @@ var EditForm = React.createClass({
 		});
 	},
 
-	loadItem(id, tip) {
+	loadItem (id, tip) {
 		this.props.list.loadItem(id, { drilldown: true }, (err, value) => {
 			if (err) {
 				return this.handleError(err);

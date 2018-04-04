@@ -20,10 +20,6 @@ module.exports = function (req, res, next) {
 			error = statusCode;
 			statusCode = 500;
 		}
-		// apply the status code
-		if (statusCode) {
-			res.status(statusCode);
-		}
 		// unpack { error, detail } objects passed as the error argument w/o detail argument
 		if (!detail && typeof error === 'object'
 			&& error.toString() === '[object Object]'
@@ -43,6 +39,7 @@ module.exports = function (req, res, next) {
 		var data = typeof error === 'string' || (error && detail)
 			? { error: error, detail: detail }
 			: error;
+		data.status = statusCode;
 		res.json(data);
 		return assign({
 			statusCode: statusCode,

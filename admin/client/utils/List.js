@@ -128,7 +128,11 @@ List.prototype.updateItem = function (id, formData, callback) {
 		body: formData,
 	}, (err, resp, data) => {
 		if (err) return callback(err);
-		if (resp.statusCode === 200) {
+
+		// 为了避免 /admin/api 报错，后端的错误状态码直接写到了 response 里面
+		if (data && data.status && data.status > 200 && data.error && data.detail) {
+			callback(data);
+		} else if (resp.statusCode === 200) {
 			callback(null, data);
 		} else {
 			callback(data);
