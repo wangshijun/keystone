@@ -12,11 +12,9 @@ module.exports = function (req, res) {
 	// var updateCount = 0;
 	async.map(req.body.items, function (data, done) {
 		req.list.model.findById(data.id, function (err, item) {
-			// if (err) return done({ statusCode: 500, error: 'database error', detail: err, id: data.id });
 			if (err) {
 				return res.apiError(500, 'database error', err);
 			}
-			// if (!item) return done({ statusCode: 404, error: 'not found', id: data.id });
 			if (!item) {
 				return res.apiError(404, 'not found', req.params.id);
 			}

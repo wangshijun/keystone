@@ -100,7 +100,7 @@ List.prototype.createItem = function (formData, callback) {
 		body: formData,
 	}, (err, resp, data) => {
 		if (err) callback(err);
-		if (data && data.status && data.status > 200 && data.error && data.detail) {
+		if (data && data.status && data.status > 200 && data.error) {
 			callback(data);
 		} else if (resp.statusCode === 200) {
 			callback(null, data);
@@ -132,7 +132,7 @@ List.prototype.updateItem = function (id, formData, callback) {
 		if (err) return callback(err);
 
 		// 为了避免 /admin/api 报错，后端的错误状态码直接写到了 response 里面
-		if (data && data.status && data.status > 200 && data.error && data.detail) {
+		if (data && data.status && data.status > 200 && data.error) {
 			callback(data);
 		} else if (resp.statusCode === 200) {
 			callback(null, data);
@@ -241,7 +241,7 @@ List.prototype.loadItem = function (itemId, options, callback) {
 	}, (err, resp, data) => {
 		if (err) return callback(err);
 		// Pass the data as result or error, depending on the statusCode
-		if (data && data.status && data.status > 200 && data.error && data.detail) {
+		if (data && data.status && data.status > 200 && data.error) {
 			callback(data);
 		} else if (resp.statusCode === 200) {
 			callback(null, data);
@@ -326,7 +326,7 @@ List.prototype.deleteItems = function (itemIds, callback) {
 	}, (err, resp, data) => {
 		if (err) return callback(err);
 		// Pass the body as result or error, depending on the statusCode
-		if (data && data.status && data.status > 200 && data.error && data.detail) {
+		if (data && data.status && data.status > 200 && data.error) {
 			callback(data);
 		} else if (resp.statusCode === 200) {
 			if (data.failed) return callback(data.error);
@@ -352,7 +352,7 @@ List.prototype.reorderItems = function (item, oldSortOrder, newSortOrder, pageOp
 			return callback(e);
 		}
 		// Pass the body as result or error, depending on the statusCode
-		if (body && body.status && body.status > 200 && body.error && body.detail) {
+		if (body && body.status && body.status > 200 && body.error) {
 			callback(body);
 		} else if (resp.statusCode === 200) {
 			callback(null, body);
