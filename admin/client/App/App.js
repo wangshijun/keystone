@@ -30,20 +30,26 @@ const App = (props) => {
 	let children = props.children;
 	// If we're on either a list or an item view
 	let currentList, currentSection;
+	let customSecondaryNav = null;
 	if (props.params.listId) {
 		currentList = listsByPath[props.params.listId];
-		const byList = Keystone.nav.by.list[props.params.listId];
+		const parentKey = props.params.listId.split('-')[0];
+		const byList = Keystone.nav.by.list[parentKey];
 
-		if (byList) {
-			const section = byList.lists[0];
+		if (byList && byList.lists[0] && byList.lists[0].customPage) {
+			let parentSection = byList.lists[0];
+			let section = parentSection;
 
-			if (section.customPage) {
-				children = (
-					<Container style={{ height: '100%', position: 'absolute', margin: 'auto', top: 0, bottom: 0, right: 0, left: 0 }}>
-						<iframe src={section.targetUrl} seamless style={{ border: 0, width: '100%', height: '100%' }}></iframe>
-					</Container>
-				);
+			if (Array.isArray(parentSection.links)) {
+				section = parentSection.links.find(x => x.key === props.params.listId);
+				customSecondaryNav = parentSection.links;
 			}
+
+			children = (
+				<Container style={{ height: '100%', position: 'absolute', margin: 'auto', top: 0, bottom: 0, right: 0, left: 0 }}>
+					<iframe src={section.targetUrl} seamless style={{ border: 0, width: '100%', height: '100%' }}></iframe>
+				</Container>
+			);
 		// If we're on a list path that doesn't exist (e.g. /keystone/gibberishasfw34afsd) this will
 		// be undefined
 		} else if (!currentList) {
@@ -79,10 +85,10 @@ const App = (props) => {
 					signoutUrl={Keystone.signoutUrl}
 				/>
 				{/* If a section is open currently, show the secondary nav */}
-				{(currentSection) ? (
+				{(customSecondaryNav || currentSection) ? (
 					<SecondaryNavigation
 						currentListKey={props.params.listId}
-						lists={currentSection.lists}
+						lists={customSecondaryNav || currentSection.lists}
 						itemId={props.params.itemId}
 					/>
 				) : null}
