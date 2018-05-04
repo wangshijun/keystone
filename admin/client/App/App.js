@@ -21,6 +21,7 @@ const classes = StyleSheet.create({
 	},
 	body: {
 		flexGrow: 1,
+		position: 'relative',
 	},
 });
 
@@ -31,9 +32,21 @@ const App = (props) => {
 	let currentList, currentSection;
 	if (props.params.listId) {
 		currentList = listsByPath[props.params.listId];
+		const byList = Keystone.nav.by.list[props.params.listId];
+
+		if (byList) {
+			const section = byList.lists[0];
+
+			if (section.customPage) {
+				children = (
+					<Container style={{ height: '100%', position: 'absolute', margin: 'auto', top: 0, bottom: 0, right: 0, left: 0 }}>
+						<iframe src={section.targetUrl} seamless style={{ border: 0, width: '100%', height: '100%' }}></iframe>
+					</Container>
+				);
+			}
 		// If we're on a list path that doesn't exist (e.g. /keystone/gibberishasfw34afsd) this will
 		// be undefined
-		if (!currentList) {
+		} else if (!currentList) {
 			children = (
 				<Container>
 					<p>List not found!</p>
