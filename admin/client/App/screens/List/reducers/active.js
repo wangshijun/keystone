@@ -31,10 +31,10 @@ function active (state = initialState, action) {
 		case SET_ACTIVE_LIST:
 			return assign({}, state, {
 				id: action.id,
-				columns: action.list.expandColumns(action.list.defaultColumns),
+				columns: action.list ? action.list.expandColumns(action.list.defaultColumns) : [],
 				filters: [],
 				search: '',
-				sort: action.list.expandSort(action.list.defaultSort),
+				sort: action.list ? action.list.expandSort(action.list.defaultSort) : [],
 			});
 		case SET_ACTIVE_SEARCH:
 			return assign({}, state, {
